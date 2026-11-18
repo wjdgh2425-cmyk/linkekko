@@ -7,6 +7,8 @@ app = Flask(__name__)
 # LINK EKKO 사이트 데이터
 # =====================================
 
+BASE_URL = "https://linkekko.onrender.com"
+
 SITES = [
     {
         "category": "만화",
@@ -46,6 +48,37 @@ CATEGORIES = list(dict.fromkeys(
 
 
 # =====================================
+# 구조화된 데이터 (Google SEO)
+# =====================================
+
+STRUCTURED_DATA = """
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://linkekko.onrender.com/#organization",
+      "name": "LINK EKKO",
+      "alternateName": "링크 에코 주소모아",
+      "url": "https://linkekko.onrender.com/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://linkekko.onrender.com/#website",
+      "name": "LINK EKKO | 링크 에코 주소모아",
+      "alternateName": "링크 에코",
+      "url": "https://linkekko.onrender.com/",
+      "inLanguage": "ko-KR",
+      "publisher": {
+        "@id": "https://linkekko.onrender.com/#organization"
+      }
+    }
+  ]
+}
+"""
+
+
+# =====================================
 # 홈페이지 HTML
 # =====================================
 
@@ -54,27 +87,53 @@ HTML = """
 <html lang="ko">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>LINK EKKO | 링크 에코 주소모아</title>
+<title>LINK EKKO | 링크 에코 주소모아 - 분야별 사이트 모음</title>
 
 <meta name="description"
-content="LINK EKKO(링크 에코 주소모아)는 만화, 애니메이션, 웹툰, 영화 등 다양한 분야의 외부 사이트 주소를 한곳에서 편리하게 찾아볼 수 있는 사이트 모음 서비스입니다.">
+content="LINK EKKO(링크 에코 주소모아)에서 만화, 애니메이션, 웹툰, 영화·드라마 등 다양한 분야의 외부 사이트 주소를 편리하게 찾아보세요. 분야별 카테고리와 검색 기능을 제공하는 사이트 모음 서비스입니다.">
 
 <meta name="keywords"
-content="LINK EKKO, 링크 에코, 주소모아, 사이트모음, 사이트 주소">
+content="LINK EKKO, 링크 에코, 링크에코, 주소모아, 사이트모음, 사이트 주소, 만화 사이트, 애니메이션 사이트, 웹툰 사이트, 영화 사이트">
+
+<meta name="author" content="LINK EKKO">
 
 <meta name="robots" content="index, follow">
+<meta name="googlebot" content="index, follow">
 
+<meta name="theme-color" content="#070b1c">
+
+<link rel="canonical" href="https://linkekko.onrender.com/">
+
+<!-- Google 소유권 확인 -->
 <meta name="google-site-verification"
-content="pPTsfFdNbqdZlwp9cF4Bp_mVbMWP-YJ_HMiEBsNr7B4" />
+content="pPTsfFdNbqdZlwp9cF4Bp_mVbMWP-YJ_HMiEBsNr7B4">
 
-<meta property="og:title" content="LINK EKKO | 링크 에코 주소모아">
-<meta property="og:description"
-content="원하는 사이트를 한곳에, 주소모아! LINK EKKO에서 다양한 분야의 사이트를 찾아보세요.">
+<!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://linkekko.onrender.com/">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="LINK EKKO">
+<meta property="og:title"
+content="LINK EKKO | 링크 에코 주소모아">
+<meta property="og:description"
+content="원하는 사이트를 한곳에, 주소모아! LINK EKKO에서 분야별 사이트 주소를 편리하게 찾아보세요.">
+<meta property="og:url"
+content="https://linkekko.onrender.com/">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title"
+content="LINK EKKO | 링크 에코 주소모아">
+<meta name="twitter:description"
+content="다양한 분야의 사이트 주소를 한곳에서 찾아보세요.">
+
+<!-- Google 구조화 데이터 -->
+<script type="application/ld+json">
+{{ structured_data | safe }}
+</script>
 
 <style>
 
@@ -274,6 +333,30 @@ main {
     color: #aebfdf;
 }
 
+/* SEO 소개 콘텐츠 */
+
+.seo-intro {
+    max-width: 1000px;
+    margin: 0 auto 30px;
+    padding: 22px;
+    border: 1px solid #24466c;
+    border-radius: 15px;
+    background: #101831;
+    line-height: 1.8;
+}
+
+.seo-intro h2 {
+    color: #00e5ff;
+    font-size: 21px;
+    margin-top: 0;
+}
+
+.seo-intro p {
+    color: #c2d0e9;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
 .notice {
     max-width: 900px;
     margin: 0 auto 25px;
@@ -467,9 +550,14 @@ footer span {
     main {
         padding: 25px 16px 45px;
     }
+
+    .seo-intro {
+        padding: 17px;
+    }
 }
 
 </style>
+
 </head>
 
 <body>
@@ -527,7 +615,7 @@ footer span {
         </h2>
 
         <p>
-            다양한 분야의 사이트를
+            다양한 분야의 사이트 주소를
             쉽고 빠르게 찾아보세요.
         </p>
 
@@ -536,6 +624,7 @@ footer span {
             <input
                 id="search"
                 type="text"
+                aria-label="사이트 이름이나 분야 검색"
                 placeholder="사이트 이름이나 분야를 검색하세요..."
                 oninput="filterSites()"
             >
@@ -554,13 +643,30 @@ footer span {
 
     <div class="section-title">
 
-        <h2>사이트 모아보기</h2>
+        <h2>LINK EKKO 사이트 모아보기</h2>
 
         <p>
-            원하는 분야를 선택하고 사이트를 찾아보세요.
+            분야별 카테고리에서 원하는 사이트 주소를 찾아보세요.
         </p>
 
     </div>
+
+    <!-- 검색엔진이 이해할 수 있는 소개 콘텐츠 -->
+
+    <section class="seo-intro">
+
+        <h2>링크 에코 주소모아란?</h2>
+
+        <p>
+            LINK EKKO(링크 에코)는 다양한 분야의 외부 사이트 주소를
+            카테고리별로 모아 제공하는 사이트 모음 서비스입니다.
+            만화, 애니메이션, 웹툰·만화, 영화·드라마 등
+            여러 분야의 사이트를 한곳에서 확인할 수 있습니다.
+            검색 기능과 카테고리 분류를 활용해 원하는 사이트를
+            편리하게 찾아보세요.
+        </p>
+
+    </section>
 
     <div class="notice">
         안내: 아래 사이트는 외부 사이트 링크 모음입니다.
@@ -657,7 +763,7 @@ footer span {
         ⌛ LINK <span>EKKO</span> · 주소모아
     </h2>
 
-    다양한 사이트를 한곳에서 편리하게!
+    다양한 사이트 주소를 한곳에서 편리하게!
 
     <p>
         Find it. Link it. LINK EKKO!
@@ -847,7 +953,7 @@ Sitemap: https://linkekko.onrender.com/sitemap.xml
 
 
 # =====================================
-# 홈페이지 실행
+# 홈페이지
 # =====================================
 
 @app.route("/")
@@ -856,9 +962,14 @@ def home():
     return render_template_string(
         HTML,
         sites=SITES,
-        categories=CATEGORIES
+        categories=CATEGORIES,
+        structured_data=STRUCTURED_DATA
     )
 
+
+# =====================================
+# 실행
+# =====================================
 
 if __name__ == "__main__":
     app.run(debug=True)
