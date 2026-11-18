@@ -7,7 +7,7 @@ app = Flask(__name__)
 BASE_URL = "https://linkekko.onrender.com"
 
 # =====================================
-# LINK EKKO 사이트 목록
+# 링크에코 사이트 목록
 # =====================================
 
 SITES = [
@@ -64,8 +64,8 @@ CATEGORIES = list(dict.fromkeys(
 STRUCTURED_DATA = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "LINK EKKO",
-    "alternateName": "링크 에코 주소모아",
+    "name": "링크에코",
+    "alternateName": "LINK EKKO 주소모아",
     "url": BASE_URL,
     "description": "다양한 분야의 사이트 주소를 한곳에 모아 편리하게 찾아볼 수 있는 링크 모음 서비스입니다.",
     "inLanguage": "ko-KR"
@@ -82,13 +82,13 @@ HTML = """
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>LINK EKKO | 링크 에코 주소모아</title>
+    <title>링크에코 | 주소모아</title>
 
     <meta name="description"
-          content="링크 에코 주소모아에서 티빙, 넷플릭스, 왓챠, 쿠팡플레이, 유튜브 등 다양한 OTT·동영상 사이트를 확인하세요.">
+          content="링크에코 주소모아에서 티빙, 넷플릭스, 왓챠, 쿠팡플레이, 유튜브 등 다양한 OTT·동영상 사이트를 확인하세요.">
 
     <meta name="keywords"
-          content="LINK EKKO, 링크 에코, 주소모아, 티빙, 넷플릭스, 왓챠, 쿠팡플레이, 유튜브">
+          content="링크에코, LINK EKKO, 주소모아, 티빙, 넷플릭스, 왓챠, 쿠팡플레이, 유튜브">
 
     <meta name="robots" content="index, follow">
 
@@ -98,9 +98,9 @@ HTML = """
     <link rel="canonical" href="https://linkekko.onrender.com/">
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="LINK EKKO | 링크 에코 주소모아">
+    <meta property="og:title" content="링크에코 | 주소모아">
     <meta property="og:description"
-          content="자주 찾는 사이트를 링크 에코에서 편리하게 확인하세요.">
+          content="자주 찾는 사이트를 링크에코에서 편리하게 확인하세요.">
     <meta property="og:url" content="https://linkekko.onrender.com/">
 
     <script type="application/ld+json">
@@ -150,6 +150,8 @@ HTML = """
             background-size: 45px 45px;
         }
 
+        /* 상단 로고 */
+
         header {
             padding: 23px 7%;
             display: flex;
@@ -163,17 +165,16 @@ HTML = """
             font-size: 25px;
             font-weight: 900;
             letter-spacing: 2px;
-            text-shadow: 0 0 15px rgba(0,220,255,.65);
-        }
-
-        .logo span {
             color: #00e5ff;
+            text-shadow: 0 0 15px rgba(0,220,255,.65);
         }
 
         .header-label {
             color: #9ba9c8;
             font-size: 13px;
         }
+
+        /* 메인 화면 */
 
         .hero {
             max-width: 1250px;
@@ -220,6 +221,8 @@ HTML = """
             line-height: 1.8;
         }
 
+        /* 사이트 목록 */
+
         .container {
             max-width: 1250px;
             margin: 0 auto;
@@ -247,6 +250,8 @@ HTML = """
             font-size: 13px;
         }
 
+        /* 검색창 */
+
         .search-box {
             width: 100%;
             padding: 19px 22px;
@@ -267,6 +272,8 @@ HTML = """
         .search-box::placeholder {
             color: #7e8ba8;
         }
+
+        /* 카테고리 */
 
         .filter-area {
             display: flex;
@@ -291,6 +298,8 @@ HTML = """
             background: #00e5ff;
             border-color: #00e5ff;
         }
+
+        /* 사이트 카드 */
 
         .site-grid {
             display: grid;
@@ -381,6 +390,8 @@ HTML = """
             background: white;
         }
 
+        /* 즐겨찾기 */
+
         .favorite-btn {
             position: absolute;
             top: 18px;
@@ -404,6 +415,8 @@ HTML = """
             border: 1px dashed rgba(255,255,255,.15);
             border-radius: 15px;
         }
+
+        /* 사이트 소개 */
 
         .intro {
             margin-top: 55px;
@@ -488,6 +501,8 @@ HTML = """
             font-size: 13px;
         }
 
+        /* 하단 */
+
         footer {
             border-top: 1px solid rgba(255,255,255,.08);
             padding: 28px 20px;
@@ -501,6 +516,8 @@ HTML = """
             color: #00dff5;
             letter-spacing: 1px;
         }
+
+        /* 모바일 화면 */
 
         @media (max-width: 900px) {
             .site-grid {
@@ -518,7 +535,7 @@ HTML = """
             }
 
             .logo {
-                font-size: 21px;
+                font-size: 23px;
             }
 
             .header-label {
@@ -554,13 +571,19 @@ HTML = """
     <div class="background-glow"></div>
     <div class="background-grid"></div>
 
+    <!-- 왼쪽 상단 로고 -->
+
     <header>
-        <a class="logo" href="/">LINK <span>EKKO</span></a>
+        <a class="logo" href="/">링크에코</a>
         <div class="header-label">링크 모음 서비스</div>
     </header>
 
+    <!-- 메인 화면 -->
+
     <section class="hero">
-        <div class="hero-tag">링크 에코에 오신 것을 환영합니다</div>
+        <div class="hero-tag">
+            링크에코에 오신 것을 환영합니다
+        </div>
 
         <h1>
             나만의 링크,<br>
@@ -569,17 +592,21 @@ HTML = """
 
         <p>
             자주 찾는 사이트를 한곳에서.<br>
-            링크 에코에서 원하는 사이트를 쉽고 빠르게 찾아보세요.
+            링크에코에서 원하는 사이트를 쉽고 빠르게 찾아보세요.
         </p>
     </section>
 
     <main class="container">
+
         <div class="section-heading">
             <h2>사이트 <span>둘러보기</span></h2>
+
             <div class="site-count">
                 등록된 사이트 {{ sites|length }}개
             </div>
         </div>
+
+        <!-- 검색창 -->
 
         <input
             id="searchInput"
@@ -589,7 +616,10 @@ HTML = """
             aria-label="사이트 검색"
         >
 
+        <!-- 카테고리 -->
+
         <div class="filter-area">
+
             <button class="filter-btn active" data-category="all">
                 전체 사이트
             </button>
@@ -603,16 +633,22 @@ HTML = """
             <button class="filter-btn" data-category="favorites">
                 즐겨찾기 ★
             </button>
+
         </div>
 
+        <!-- 사이트 카드 -->
+
         <div class="site-grid" id="siteGrid">
+
             {% for site in sites %}
+
             <article
                 class="site-card"
                 data-name="{{ site.name }}"
                 data-category="{{ site.category }}"
                 data-description="{{ site.description }}"
             >
+
                 <button
                     class="favorite-btn"
                     type="button"
@@ -621,12 +657,21 @@ HTML = """
                 >♡</button>
 
                 <div class="card-top">
-                    <div class="site-icon">{{ site.icon }}</div>
+
+                    <div class="site-icon">
+                        {{ site.icon }}
+                    </div>
 
                     <div>
-                        <div class="site-name">{{ site.name }}</div>
-                        <div class="site-category">{{ site.category }}</div>
+                        <div class="site-name">
+                            {{ site.name }}
+                        </div>
+
+                        <div class="site-category">
+                            {{ site.category }}
+                        </div>
                     </div>
+
                 </div>
 
                 <p class="site-description">
@@ -634,40 +679,58 @@ HTML = """
                 </p>
 
                 <div class="card-bottom">
-                    <span class="site-tag">{{ site.tag }}</span>
+
+                    <span class="site-tag">
+                        {{ site.tag }}
+                    </span>
 
                     <a
                         class="visit-btn"
                         href="{{ site.url }}"
                         target="_blank"
                         rel="noopener noreferrer"
-                    >사이트 방문 ↗</a>
+                    >
+                        사이트 방문 ↗
+                    </a>
+
                 </div>
+
             </article>
+
             {% endfor %}
+
         </div>
 
         <div class="empty-message" id="emptyMessage">
             검색 결과가 없습니다.
         </div>
 
+        <!-- 사이트 소개 -->
+
         <section class="intro">
-            <h2>링크 에코 주소모아</h2>
+
+            <h2>링크에코 주소모아</h2>
 
             <p>
-                링크 에코는 OTT·동영상 분야의 사이트 주소를 한곳에 모아
-                편리하게 확인할 수 있도록 돕는 링크 모음 서비스입니다.
+                링크에코는 OTT·동영상 분야의 사이트 주소를
+                한곳에 모아 편리하게 확인할 수 있도록 돕는
+                링크 모음 서비스입니다.
                 검색 기능을 이용해 원하는 사이트를 빠르게 찾아보세요.
-                외부 사이트의 서비스 내용과 이용 조건은 각 사이트에서 확인해 주세요.
-                링크 에코는 외부 사이트의 운영 주체나 공식 제휴사가 아닙니다.
+                외부 사이트의 서비스 내용과 이용 조건은
+                각 사이트에서 확인해 주세요.
+                링크에코는 외부 사이트의 운영 주체나 공식 제휴사가 아닙니다.
             </p>
+
         </section>
 
+        <!-- 광고문의 -->
+
         <section class="contact-section">
+
             <h2>광고 <span>문의</span></h2>
 
             <p>
-                링크 에코 광고 및 제휴 관련 문의는<br>
+                링크에코 광고 및 제휴 관련 문의는<br>
                 아래 텔레그램으로 연락해 주세요.
             </p>
 
@@ -681,20 +744,37 @@ HTML = """
                 텔레그램으로 문의하기
             </a>
 
-            <span class="telegram-id">@linkekko369</span>
+            <span class="telegram-id">
+                @linkekko369
+            </span>
+
         </section>
+
     </main>
 
+    <!-- 홈페이지 하단 -->
+
     <footer>
-        <strong>LINK EKKO</strong><br>
-        링크 에코 주소모아<br>
+
+        <strong>링크에코</strong><br>
+
+        링크에코 주소모아<br>
+
         본 사이트는 외부 사이트의 링크를 제공하며,
-        각 외부 사이트의 운영 및 콘텐츠에 대한 책임은 해당 사이트에 있습니다.
+        각 외부 사이트의 운영 및 콘텐츠에 대한 책임은
+        해당 사이트에 있습니다.
+
         <br>
+
         광고문의: @linkekko369
+
         <br>
-        © 2026 링크 에코. 모든 권리 보유.
+
+        © 2026 링크에코. 모든 권리 보유.
+
     </footer>
+
+    <!-- 검색 및 즐겨찾기 기능 -->
 
     <script>
         const searchInput = document.getElementById("searchInput");
@@ -718,24 +798,37 @@ HTML = """
         }
 
         function updateFavoriteButtons() {
+
             document.querySelectorAll(".favorite-btn").forEach(button => {
+
                 const name = button.dataset.favorite;
                 const isFavorite = favorites.includes(name);
 
                 button.classList.toggle("active", isFavorite);
+
                 button.textContent = isFavorite ? "♥" : "♡";
+
                 button.setAttribute(
                     "aria-label",
-                    name + (isFavorite ? " 즐겨찾기 해제" : " 즐겨찾기 추가")
+                    name + (
+                        isFavorite
+                        ? " 즐겨찾기 해제"
+                        : " 즐겨찾기 추가"
+                    )
                 );
+
             });
+
         }
 
         function filterCards() {
+
             const keyword = searchInput.value.trim().toLowerCase();
+
             let visibleCount = 0;
 
             cards.forEach(card => {
+
                 const name = card.dataset.name.toLowerCase();
                 const category = card.dataset.category.toLowerCase();
                 const description = card.dataset.description.toLowerCase();
@@ -760,34 +853,50 @@ HTML = """
                 if (visible) {
                     visibleCount++;
                 }
+
             });
 
             emptyMessage.style.display =
                 visibleCount === 0 ? "block" : "none";
+
         }
 
         searchInput.addEventListener("input", filterCards);
 
         filterButtons.forEach(button => {
+
             button.addEventListener("click", () => {
+
                 filterButtons.forEach(item =>
                     item.classList.remove("active")
                 );
 
                 button.classList.add("active");
+
                 activeCategory = button.dataset.category;
+
                 filterCards();
+
             });
+
         });
 
         document.querySelectorAll(".favorite-btn").forEach(button => {
+
             button.addEventListener("click", () => {
+
                 const name = button.dataset.favorite;
 
                 if (favorites.includes(name)) {
-                    favorites = favorites.filter(item => item !== name);
+
+                    favorites = favorites.filter(
+                        item => item !== name
+                    );
+
                 } else {
+
                     favorites.push(name);
+
                 }
 
                 localStorage.setItem(
@@ -797,12 +906,16 @@ HTML = """
 
                 updateFavoriteButtons();
                 filterCards();
+
             });
+
         });
 
         updateFavoriteButtons();
         filterCards();
+
     </script>
+
 </body>
 </html>
 """
@@ -813,6 +926,7 @@ HTML = """
 
 @app.route("/")
 def home():
+
     return render_template_string(
         HTML,
         sites=SITES,
@@ -827,6 +941,7 @@ def home():
 
 @app.route("/sitemap.xml")
 def sitemap():
+
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
     xml = f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -849,6 +964,7 @@ def sitemap():
 
 @app.route("/robots.txt")
 def robots():
+
     content = f"""User-agent: *
 Allow: /
 
@@ -863,6 +979,7 @@ Sitemap: {BASE_URL}/sitemap.xml
 # =====================================
 
 if __name__ == "__main__":
+
     app.run(
         host="0.0.0.0",
         port=5000,
