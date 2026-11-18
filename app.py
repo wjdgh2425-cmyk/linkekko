@@ -1,7 +1,6 @@
 
 from flask import Flask, render_template_string, Response
 from datetime import datetime, timezone
-from xml.sax.saxutils import escape
 
 app = Flask(__name__)
 
@@ -13,201 +12,39 @@ BASE_URL = "https://linkekko.onrender.com"
 
 SITES = [
     # OTT · 동영상
-    {
-        "category": "OTT·동영상",
-        "name": "티빙",
-        "description": "드라마, 예능, 영화와 실시간 TV",
-        "url": "https://www.tving.com/",
-        "icon": "📺"
-    },
-    {
-        "category": "OTT·동영상",
-        "name": "넷플릭스",
-        "description": "다양한 영화와 오리지널 시리즈",
-        "url": "https://www.netflix.com/kr",
-        "icon": "🎬"
-    },
-    {
-        "category": "OTT·동영상",
-        "name": "왓챠",
-        "description": "영화와 드라마 감상 서비스",
-        "url": "https://watcha.com/",
-        "icon": "🍿"
-    },
-    {
-        "category": "OTT·동영상",
-        "name": "쿠팡플레이",
-        "description": "영화, 드라마, 스포츠 콘텐츠",
-        "url": "https://www.coupangplay.com/",
-        "icon": "🎥"
-    },
-    {
-        "category": "OTT·동영상",
-        "name": "유튜브",
-        "description": "다양한 영상과 크리에이터 콘텐츠",
-        "url": "https://www.youtube.com/",
-        "icon": "▶️"
-    },
-    {
-        "category": "OTT·동영상",
-        "name": "웨이브",
-        "description": "방송 프로그램과 영화 감상",
-        "url": "https://www.wavve.com/",
-        "icon": "🌊"
-    },
-    {
-        "category": "OTT·동영상",
-        "name": "디즈니플러스",
-        "description": "디즈니, 마블, 스타워즈 콘텐츠",
-        "url": "https://www.disneyplus.com/ko-kr",
-        "icon": "✨"
-    },
-    {
-        "category": "OTT·동영상",
-        "name": "라프텔",
-        "description": "애니메이션 전문 스트리밍",
-        "url": "https://laftel.net/",
-        "icon": "🌸"
-    },
+    {"category": "OTT·동영상", "name": "티빙", "description": "드라마, 예능, 영화와 실시간 TV", "url": "https://www.tving.com/", "icon": "📺"},
+    {"category": "OTT·동영상", "name": "넷플릭스", "description": "다양한 영화와 오리지널 시리즈", "url": "https://www.netflix.com/kr", "icon": "🎬"},
+    {"category": "OTT·동영상", "name": "왓챠", "description": "영화와 드라마 감상 서비스", "url": "https://watcha.com/", "icon": "🍿"},
+    {"category": "OTT·동영상", "name": "쿠팡플레이", "description": "영화, 드라마, 스포츠 콘텐츠", "url": "https://www.coupangplay.com/", "icon": "🎥"},
+    {"category": "OTT·동영상", "name": "유튜브", "description": "다양한 영상과 크리에이터 콘텐츠", "url": "https://www.youtube.com/", "icon": "▶️"},
+    {"category": "OTT·동영상", "name": "웨이브", "description": "방송 프로그램과 영화 감상", "url": "https://www.wavve.com/", "icon": "🌊"},
+    {"category": "OTT·동영상", "name": "디즈니플러스", "description": "디즈니, 마블, 스타워즈 콘텐츠", "url": "https://www.disneyplus.com/ko-kr", "icon": "✨"},
+    {"category": "OTT·동영상", "name": "라프텔", "description": "애니메이션 전문 스트리밍", "url": "https://laftel.net/", "icon": "🌸"},
 
     # 게임
-    {
-        "category": "게임",
-        "name": "넥슨",
-        "description": "다양한 온라인 게임과 게임 소식",
-        "url": "https://www.nexon.com/",
-        "icon": "🎮"
-    },
-    {
-        "category": "게임",
-        "name": "라이엇 게임즈",
-        "description": "리그 오브 레전드와 라이엇 게임",
-        "url": "https://www.riotgames.com/",
-        "icon": "⚔️"
-    },
-    {
-        "category": "게임",
-        "name": "스팀",
-        "description": "PC 게임 구매와 라이브러리",
-        "url": "https://store.steampowered.com/",
-        "icon": "🕹️"
-    },
-    {
-        "category": "게임",
-        "name": "플레이스테이션",
-        "description": "플레이스테이션 게임과 콘솔 정보",
-        "url": "https://www.playstation.com/ko-kr/",
-        "icon": "🎯"
-    },
-    {
-        "category": "게임",
-        "name": "닌텐도",
-        "description": "닌텐도 게임과 콘솔 정보",
-        "url": "https://www.nintendo.com/kr/",
-        "icon": "🍄"
-    },
-    {
-        "category": "게임",
-        "name": "배틀그라운드",
-        "description": "배틀그라운드 공식 홈페이지",
-        "url": "https://pubg.com/ko-kr",
-        "icon": "🔫"
-    },
+    {"category": "게임", "name": "넥슨", "description": "다양한 온라인 게임과 게임 소식", "url": "https://www.nexon.com/", "icon": "🎮"},
+    {"category": "게임", "name": "라이엇 게임즈", "description": "리그 오브 레전드와 라이엇 게임", "url": "https://www.riotgames.com/", "icon": "⚔️"},
+    {"category": "게임", "name": "스팀", "description": "PC 게임 구매와 라이브러리", "url": "https://store.steampowered.com/", "icon": "🕹️"},
+    {"category": "게임", "name": "플레이스테이션", "description": "플레이스테이션 게임과 콘솔 정보", "url": "https://www.playstation.com/ko-kr/", "icon": "🎯"},
+    {"category": "게임", "name": "닌텐도", "description": "닌텐도 게임과 콘솔 정보", "url": "https://www.nintendo.com/kr/", "icon": "🍄"},
+    {"category": "게임", "name": "배틀그라운드", "description": "배틀그라운드 공식 홈페이지", "url": "https://pubg.com/ko-kr", "icon": "🔫"},
 
     # 실시간 방송
-    {
-        "category": "실시간 방송",
-        "name": "SOOP",
-        "description": "실시간 방송과 스트리머 콘텐츠",
-        "url": "https://www.sooplive.co.kr/",
-        "icon": "📡"
-    },
-    {
-        "category": "실시간 방송",
-        "name": "치지직",
-        "description": "게임과 다양한 실시간 방송",
-        "url": "https://chzzk.naver.com/",
-        "icon": "🟢"
-    },
-    {
-        "category": "실시간 방송",
-        "name": "유튜브 라이브",
-        "description": "유튜브 실시간 스트리밍",
-        "url": "https://www.youtube.com/live",
-        "icon": "🔴"
-    },
-    {
-        "category": "실시간 방송",
-        "name": "틱톡",
-        "description": "숏폼 영상과 라이브 방송",
-        "url": "https://www.tiktok.com/",
-        "icon": "🎵"
-    },
-    {
-        "category": "실시간 방송",
-        "name": "킥",
-        "description": "글로벌 실시간 스트리밍 플랫폼",
-        "url": "https://kick.com/",
-        "icon": "💚"
-    },
+    {"category": "실시간 방송", "name": "SOOP", "description": "실시간 방송과 스트리머 콘텐츠", "url": "https://www.sooplive.co.kr/", "icon": "📡"},
+    {"category": "실시간 방송", "name": "치지직", "description": "게임과 다양한 실시간 방송", "url": "https://chzzk.naver.com/", "icon": "🟢"},
+    {"category": "실시간 방송", "name": "유튜브 라이브", "description": "유튜브 실시간 스트리밍", "url": "https://www.youtube.com/live", "icon": "🔴"},
+    {"category": "실시간 방송", "name": "틱톡", "description": "숏폼 영상과 라이브 방송", "url": "https://www.tiktok.com/", "icon": "🎵"},
+    {"category": "실시간 방송", "name": "킥", "description": "글로벌 실시간 스트리밍 플랫폼", "url": "https://kick.com/", "icon": "💚"},
 
     # 만화 · 웹툰
-    {
-        "category": "만화·웹툰",
-        "name": "네이버웹툰",
-        "description": "다양한 장르의 인기 웹툰",
-        "url": "https://comic.naver.com/",
-        "icon": "📗"
-    },
-    {
-        "category": "만화·웹툰",
-        "name": "카카오웹툰",
-        "description": "인기 웹툰과 독점 연재 작품",
-        "url": "https://webtoon.kakao.com/",
-        "icon": "📙"
-    },
-    {
-        "category": "만화·웹툰",
-        "name": "카카오페이지",
-        "description": "웹툰과 웹소설 콘텐츠",
-        "url": "https://page.kakao.com/",
-        "icon": "📚"
-    },
-    {
-        "category": "만화·웹툰",
-        "name": "네이버 시리즈",
-        "description": "웹툰과 웹소설 감상",
-        "url": "https://series.naver.com/",
-        "icon": "📖"
-    },
-    {
-        "category": "만화·웹툰",
-        "name": "레진코믹스",
-        "description": "다양한 장르의 웹툰 플랫폼",
-        "url": "https://www.lezhin.com/",
-        "icon": "🎨"
-    },
-    {
-        "category": "만화·웹툰",
-        "name": "봄툰",
-        "description": "다양한 장르의 웹툰 플랫폼",
-        "url": "https://www.bomtoon.com/",
-        "icon": "🌷"
-    },
-    {
-        "category": "만화·웹툰",
-        "name": "리디",
-        "description": "웹툰, 웹소설과 전자책",
-        "url": "https://ridibooks.com/",
-        "icon": "📕"
-    },
-    {
-        "category": "만화·웹툰",
-        "name": "미스터블루",
-        "description": "만화와 웹툰 콘텐츠",
-        "url": "https://www.mrblue.com/",
-        "icon": "🖌️"
-    },
+    {"category": "만화·웹툰", "name": "네이버웹툰", "description": "다양한 장르의 인기 웹툰", "url": "https://comic.naver.com/", "icon": "📗"},
+    {"category": "만화·웹툰", "name": "카카오웹툰", "description": "인기 웹툰과 독점 연재 작품", "url": "https://webtoon.kakao.com/", "icon": "📙"},
+    {"category": "만화·웹툰", "name": "카카오페이지", "description": "웹툰과 웹소설 콘텐츠", "url": "https://page.kakao.com/", "icon": "📚"},
+    {"category": "만화·웹툰", "name": "네이버 시리즈", "description": "웹툰과 웹소설 감상", "url": "https://series.naver.com/", "icon": "📖"},
+    {"category": "만화·웹툰", "name": "레진코믹스", "description": "다양한 장르의 웹툰 플랫폼", "url": "https://www.lezhin.com/", "icon": "🎨"},
+    {"category": "만화·웹툰", "name": "봄툰", "description": "다양한 장르의 웹툰 플랫폼", "url": "https://www.bomtoon.com/", "icon": "🌷"},
+    {"category": "만화·웹툰", "name": "리디", "description": "웹툰, 웹소설과 전자책", "url": "https://ridibooks.com/", "icon": "📕"},
+    {"category": "만화·웹툰", "name": "미스터블루", "description": "만화와 웹툰 콘텐츠", "url": "https://www.mrblue.com/", "icon": "🖌️"},
 ]
 
 CATEGORIES = [
@@ -244,16 +81,11 @@ HTML = """
 <meta property="og:url" content="https://linkekko.onrender.com/">
 <meta property="og:site_name" content="링크에코">
 
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="링크에코 | 주소모아">
-<meta name="twitter:description" content="분야별 공식 사이트를 한곳에서 편리하게 확인하세요.">
-
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "링크에코",
-  "alternateName": "LINK EKKO",
   "url": "https://linkekko.onrender.com/",
   "description": "분야별 공식 사이트 주소를 모아 제공하는 주소모아 서비스"
 }
@@ -316,11 +148,25 @@ header {
     background: rgba(139,92,246,0.2);
 }
 
+/* 에코 메인 배경 사진 */
+
 .hero {
     text-align: center;
-    padding: 85px 20px 45px;
+    padding: 100px 20px 55px;
     position: relative;
     overflow: hidden;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(8, 11, 24, 0.96) 0%,
+            rgba(8, 11, 24, 0.78) 48%,
+            rgba(8, 11, 24, 0.25) 100%
+        ),
+        url("https://skins.nerfplz.com/art/245019_splash.jpg");
+    background-size: cover;
+    background-position: center 25%;
+    background-repeat: no-repeat;
+    min-height: 440px;
 }
 
 .hero::before {
@@ -366,7 +212,7 @@ header {
 }
 
 .hero p {
-    color: #a5acc2;
+    color: #d0d5e5;
     line-height: 1.8;
     font-size: 15px;
     margin: 0 auto 30px;
@@ -395,7 +241,7 @@ header {
 }
 
 .search-box input::placeholder {
-    color: #737d98;
+    color: #a0a8bd;
 }
 
 .search-box button {
@@ -578,6 +424,8 @@ footer a {
 
     .hero {
         padding-top: 65px;
+        min-height: 400px;
+        background-position: 60% center;
     }
 
     .site-grid {
@@ -610,15 +458,22 @@ footer a {
 
 <header>
     <a class="logo" href="/">링크에코</a>
-    <a class="header-contact" href="https://t.me/linkekko369" target="_blank" rel="noopener noreferrer">
+
+    <a class="header-contact"
+       href="https://t.me/linkekko369"
+       target="_blank"
+       rel="noopener noreferrer">
         광고 문의
     </a>
 </header>
 
 <section class="hero">
     <div class="hero-content">
-        <div class="hero-label">LINK EKKO · 주소모아</div>
+
+        <div class="hero-label">링크에코 · 주소모아</div>
+
         <h1>원하는 사이트를 <span>한곳에서</span></h1>
+
         <p>
             자주 찾는 공식 사이트를 분야별로 모았습니다.<br>
             링크에코에서 쉽고 빠르게 찾아보세요.
@@ -631,14 +486,17 @@ footer a {
                 placeholder="사이트 이름이나 키워드를 검색하세요"
                 aria-label="사이트 검색"
             >
+
             <button onclick="searchSites()">검색</button>
         </div>
+
     </div>
 </section>
 
 <main class="container">
 
     <nav class="category-list" aria-label="사이트 카테고리">
+
         {% for category in categories %}
         <button
             class="category-btn {% if loop.first %}active{% endif %}"
@@ -647,7 +505,11 @@ footer a {
             {{ category }}
         </button>
         {% endfor %}
-        <button class="category-btn" onclick="showFavorites(this)">⭐ 즐겨찾기</button>
+
+        <button class="category-btn" onclick="showFavorites(this)">
+            ⭐ 즐겨찾기
+        </button>
+
     </nav>
 
     <div class="section-heading">
@@ -656,6 +518,7 @@ footer a {
     </div>
 
     <section class="site-grid" id="siteGrid">
+
         {% for site in sites %}
         <article
             class="site-card"
@@ -663,8 +526,10 @@ footer a {
             data-name="{{ site.name }}"
             data-description="{{ site.description }}"
         >
+
             <div class="card-top">
                 <span class="site-icon">{{ site.icon }}</span>
+
                 <button
                     class="favorite"
                     aria-label="{{ site.name }} 즐겨찾기"
@@ -673,6 +538,7 @@ footer a {
             </div>
 
             <h3>{{ site.name }}</h3>
+
             <p>{{ site.description }}</p>
 
             <a
@@ -683,8 +549,10 @@ footer a {
             >
                 공식 사이트 방문 →
             </a>
+
         </article>
         {% endfor %}
+
     </section>
 
     <div class="empty" id="emptyMessage">
@@ -693,6 +561,7 @@ footer a {
 
     <section class="info-section">
         <h2>링크에코 주소모아 소개</h2>
+
         <p>
             링크에코는 다양한 분야의 공식 웹사이트 주소를 한곳에 모아
             편리하게 확인할 수 있도록 만든 주소모아 서비스입니다.
@@ -707,12 +576,19 @@ footer a {
 </main>
 
 <footer>
-    <div>© 2026 링크에코 LINK EKKO. All rights reserved.</div>
-    <div>사이트 관련 문의 및 광고 문의:
-        <a href="https://t.me/linkekko369" target="_blank" rel="noopener noreferrer">
+    <div>© 2026 링크에코. 모든 권리 보유.</div>
+
+    <div>
+        사이트 관련 문의 및 광고 문의:
+        <a
+            href="https://t.me/linkekko369"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
             텔레그램 @linkekko369
         </a>
     </div>
+
     <div>링크에코는 각 외부 사이트와 별개의 서비스입니다.</div>
 </footer>
 
@@ -809,7 +685,9 @@ document.getElementById("searchInput").addEventListener(
 
 function getFavorites() {
     try {
-        return JSON.parse(localStorage.getItem("linkekkoFavorites") || "[]");
+        return JSON.parse(
+            localStorage.getItem("linkekkoFavorites") || "[]"
+        );
     } catch (error) {
         return [];
     }
@@ -854,6 +732,10 @@ applyFilters();
 </body>
 </html>
 """
+
+# =====================================
+# 홈페이지
+# =====================================
 
 @app.route("/")
 def home():
