@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, Response
 
 app = Flask(__name__)
 
@@ -57,7 +57,24 @@ HTML = """
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>LINK EKKO | 주소모아</title>
+<title>LINK EKKO | 링크 에코 주소모아</title>
+
+<meta name="description"
+content="LINK EKKO(링크 에코 주소모아)는 만화, 애니메이션, 웹툰, 영화 등 다양한 분야의 외부 사이트 주소를 한곳에서 편리하게 찾아볼 수 있는 사이트 모음 서비스입니다.">
+
+<meta name="keywords"
+content="LINK EKKO, 링크 에코, 주소모아, 사이트모음, 사이트 주소">
+
+<meta name="robots" content="index, follow">
+
+<meta name="google-site-verification"
+content="pPTsfFdNbqdZlwp9cF4Bp_mVbMWP-YJ_HMiEBsNr7B4" />
+
+<meta property="og:title" content="LINK EKKO | 링크 에코 주소모아">
+<meta property="og:description"
+content="원하는 사이트를 한곳에, 주소모아! LINK EKKO에서 다양한 분야의 사이트를 찾아보세요.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://linkekko.onrender.com/">
 
 <style>
 
@@ -75,8 +92,6 @@ body {
     color: #f5f8ff;
     font-family: Arial, sans-serif;
 }
-
-/* 상단 메뉴 */
 
 header {
     min-height: 70px;
@@ -108,8 +123,6 @@ nav a {
 nav a:hover {
     color: #00e5ff;
 }
-
-/* 메인 화면 */
 
 .hero {
     min-height: 570px;
@@ -206,8 +219,6 @@ nav a:hover {
     line-height: 1.6;
 }
 
-/* 검색창 */
-
 .search-box {
     display: flex;
     margin-top: 35px;
@@ -244,8 +255,6 @@ nav a:hover {
     background: #69f0ff;
 }
 
-/* 사이트 목록 */
-
 main {
     max-width: 1400px;
     margin: auto;
@@ -265,8 +274,6 @@ main {
     color: #aebfdf;
 }
 
-/* 안내 문구 */
-
 .notice {
     max-width: 900px;
     margin: 0 auto 25px;
@@ -278,8 +285,6 @@ main {
     font-size: 13px;
     line-height: 1.7;
 }
-
-/* 카테고리 */
 
 .categories {
     display: flex;
@@ -306,8 +311,6 @@ main {
     border-color: #00dfff;
     box-shadow: 0 0 18px #00dfff66;
 }
-
-/* 사이트 카드 */
 
 .grid {
     display: grid;
@@ -391,16 +394,12 @@ main {
     color: #ffdc55;
 }
 
-/* 검색 결과 없음 */
-
 #empty {
     display: none;
     text-align: center;
     padding: 40px;
     color: #b9c8e8;
 }
-
-/* 하단 */
 
 footer {
     padding: 35px 20px;
@@ -413,8 +412,6 @@ footer {
 footer span {
     color: #00dfff;
 }
-
-/* 모바일 */
 
 @media (max-width: 700px) {
 
@@ -491,7 +488,6 @@ footer span {
 
 </header>
 
-
 <section class="hero">
 
     <img
@@ -554,7 +550,6 @@ footer span {
 
 </section>
 
-
 <main>
 
     <div class="section-title">
@@ -573,9 +568,6 @@ footer span {
         콘텐츠의 저작권 및 이용 권한은 별도로 확인해 주세요.
         성인 대상 사이트는 만 19세 이상만 이용할 수 있습니다.
     </div>
-
-
-    <!-- 카테고리 -->
 
     <div class="categories" id="categories">
 
@@ -603,9 +595,6 @@ footer span {
         </button>
 
     </div>
-
-
-    <!-- 사이트 카드 -->
 
     <section class="grid" id="sites">
 
@@ -656,13 +645,11 @@ footer span {
 
     </section>
 
-
     <div id="empty">
         검색 결과가 없습니다.
     </div>
 
 </main>
-
 
 <footer>
 
@@ -678,13 +665,9 @@ footer span {
 
 </footer>
 
-
 <script>
 
 let selectedCategory = "전체";
-
-
-/* 즐겨찾기 불러오기 */
 
 function getFavorites() {
 
@@ -702,13 +685,9 @@ function getFavorites() {
 
 }
 
-
-/* 즐겨찾기 추가 및 제거 */
-
 function toggleFavorite(button) {
 
     const card = button.closest(".site");
-
     const url = card.dataset.url;
 
     let favorites = getFavorites();
@@ -731,13 +710,9 @@ function toggleFavorite(button) {
     );
 
     updateFavorites();
-
     filterSites();
 
 }
-
-
-/* 즐겨찾기 표시 */
 
 function updateFavorites() {
 
@@ -752,15 +727,11 @@ function updateFavorites() {
         );
 
         button.classList.toggle("saved", saved);
-
         button.textContent = saved ? "★" : "☆";
 
     });
 
 }
-
-
-/* 카테고리 선택 */
 
 function chooseCategory(category, button) {
 
@@ -780,9 +751,6 @@ function chooseCategory(category, button) {
 
 }
 
-
-/* 검색 및 필터 */
-
 function filterSites() {
 
     const keyword = document
@@ -796,7 +764,6 @@ function filterSites() {
     document.querySelectorAll(".site").forEach(card => {
 
         const category = card.dataset.category;
-
         const content = card.dataset.search.toLowerCase();
 
         const isFavorite = favorites.includes(
@@ -828,9 +795,6 @@ function filterSites() {
 
 }
 
-
-/* 페이지 시작 */
-
 updateFavorites();
 
 </script>
@@ -841,7 +805,49 @@ updateFavorites();
 
 
 # =====================================
-# Flask 홈페이지 실행
+# 구글 사이트맵
+# =====================================
+
+@app.route("/sitemap.xml")
+def sitemap():
+
+    xml = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://linkekko.onrender.com/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+</urlset>
+"""
+
+    return Response(
+        xml,
+        mimetype="application/xml"
+    )
+
+
+# =====================================
+# robots.txt
+# =====================================
+
+@app.route("/robots.txt")
+def robots():
+
+    content = """User-agent: *
+Allow: /
+
+Sitemap: https://linkekko.onrender.com/sitemap.xml
+"""
+
+    return Response(
+        content,
+        mimetype="text/plain"
+    )
+
+
+# =====================================
+# 홈페이지 실행
 # =====================================
 
 @app.route("/")
