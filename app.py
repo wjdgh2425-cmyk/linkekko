@@ -4,47 +4,45 @@ from flask import Flask, render_template_string
 app = Flask(__name__)
 
 # =====================================
-# LINK EKKO 공식 사이트 데이터
+# LINK EKKO 사이트 데이터
 # =====================================
 
 SITES = [
     {
-        "category": "공공기관",
-        "name": "정부24",
-        "description": "민원 신청과 정부 서비스",
-        "url": "https://www.gov.kr"
+        "category": "만화",
+        "name": "마루마루",
+        "description": "만화 관련 외부 사이트",
+        "url": "https://marumaru111.com/"
     },
     {
-        "category": "공공기관",
-        "name": "국세청",
-        "description": "세금 신고와 국세 관련 서비스",
-        "url": "https://www.nts.go.kr"
+        "category": "애니메이션",
+        "name": "애니울프",
+        "description": "애니메이션 관련 외부 사이트",
+        "url": "https://aniwolf.com/"
     },
     {
-        "category": "공공기관",
-        "name": "국민건강보험",
-        "description": "건강보험 정보와 민원 서비스",
-        "url": "https://www.nhis.or.kr"
+        "category": "웹툰·만화",
+        "name": "뚜툰",
+        "description": "웹툰 및 만화 관련 외부 사이트",
+        "url": "https://ufo1004.com/"
     },
     {
-        "category": "교육",
-        "name": "한국장학재단",
-        "description": "국가장학금과 학자금 지원",
-        "url": "https://www.kosaf.go.kr"
+        "category": "성인·유흥정보",
+        "name": "오피뷰",
+        "description": "성인 대상 유흥업소 정보 사이트 · 만 19세 이상",
+        "url": "https://opview88.com/"
     },
     {
-        "category": "취업",
-        "name": "고용24",
-        "description": "일자리 검색과 고용 서비스",
-        "url": "https://www.work24.go.kr"
-    },
-    {
-        "category": "창업",
-        "name": "K-스타트업",
-        "description": "창업 지원 사업과 창업 정보",
-        "url": "https://www.k-startup.go.kr"
+        "category": "영화·드라마",
+        "name": "티비혼",
+        "description": "영화 및 드라마 관련 외부 사이트",
+        "url": "https://tvhon11.com/"
     }
 ]
+
+CATEGORIES = list(dict.fromkeys(
+    site["category"] for site in SITES
+))
 
 
 # =====================================
@@ -57,8 +55,7 @@ HTML = """
 
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>LINK EKKO | 주소모아</title>
 
@@ -131,38 +128,22 @@ nav a:hover {
         );
 }
 
-/* 에코 이미지 */
-
 .ekko-art {
     position: absolute;
     right: 0;
     top: 0;
-
     width: 65%;
     height: 100%;
-
     object-fit: cover;
     object-position: center 25%;
-
     z-index: 0;
     opacity: 0.95;
 
     -webkit-mask-image:
-        linear-gradient(
-            to right,
-            transparent 0%,
-            black 38%
-        );
-
+        linear-gradient(to right, transparent 0%, black 38%);
     mask-image:
-        linear-gradient(
-            to right,
-            transparent 0%,
-            black 38%
-        );
+        linear-gradient(to right, transparent 0%, black 38%);
 }
-
-/* 이미지 오류 안내 */
 
 .image-error {
     display: none;
@@ -173,8 +154,6 @@ nav a:hover {
     color: #9fb8d9;
     font-size: 12px;
 }
-
-/* 어두운 오버레이 */
 
 .hero::after {
     content: "";
@@ -233,11 +212,9 @@ nav a:hover {
     display: flex;
     margin-top: 35px;
     max-width: 650px;
-
     border: 2px solid #00dfff;
     border-radius: 15px;
     overflow: hidden;
-
     background: #111a35;
     box-shadow: 0 0 22px #00cfff44;
 }
@@ -246,10 +223,8 @@ nav a:hover {
     flex: 1;
     min-width: 0;
     padding: 18px;
-
     border: none;
     outline: none;
-
     background: transparent;
     color: white;
     font-size: 16px;
@@ -258,10 +233,8 @@ nav a:hover {
 .search-box button {
     border: none;
     padding: 0 27px;
-
     color: #001321;
     background: #00dfff;
-
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;
@@ -292,6 +265,20 @@ main {
     color: #aebfdf;
 }
 
+/* 안내 문구 */
+
+.notice {
+    max-width: 900px;
+    margin: 0 auto 25px;
+    padding: 15px 18px;
+    border: 1px solid #6b5930;
+    border-radius: 12px;
+    background: #211d16;
+    color: #f1d69b;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
 /* 카테고리 */
 
 .categories {
@@ -304,13 +291,10 @@ main {
 
 .categories button {
     padding: 12px 22px;
-
     border: 1px solid #29476b;
     border-radius: 30px;
-
     color: #dbeaff;
     background: #101831;
-
     cursor: pointer;
     font-size: 15px;
 }
@@ -327,16 +311,13 @@ main {
 
 .grid {
     display: grid;
-
     grid-template-columns:
         repeat(auto-fit, minmax(220px, 1fr));
-
     gap: 20px;
 }
 
 .site {
     padding: 23px;
-
     border: 1px solid #27618b;
     border-radius: 18px;
 
@@ -383,10 +364,8 @@ main {
 .site a {
     display: inline-block;
     padding: 11px 14px;
-
     border-radius: 9px;
     background: #124bd8;
-
     color: white;
     text-decoration: none;
     font-weight: bold;
@@ -401,12 +380,9 @@ main {
 .favorite {
     border: 1px solid #47658c;
     border-radius: 9px;
-
     padding: 9px 12px;
-
     background: #172442;
     color: white;
-
     cursor: pointer;
     font-size: 17px;
 }
@@ -429,10 +405,8 @@ main {
 footer {
     padding: 35px 20px;
     text-align: center;
-
     color: #a9badc;
     border-top: 1px solid #174d70;
-
     background: #090e20;
 }
 
@@ -471,18 +445,9 @@ footer span {
         opacity: 0.7;
 
         -webkit-mask-image:
-            linear-gradient(
-                to bottom,
-                transparent 0%,
-                black 35%
-            );
-
+            linear-gradient(to bottom, transparent 0%, black 35%);
         mask-image:
-            linear-gradient(
-                to bottom,
-                transparent 0%,
-                black 35%
-            );
+            linear-gradient(to bottom, transparent 0%, black 35%);
     }
 
     .hero::after {
@@ -505,15 +470,12 @@ footer span {
     main {
         padding: 25px 16px 45px;
     }
-
 }
 
 </style>
 </head>
 
 <body>
-
-<!-- 상단 메뉴 -->
 
 <header>
 
@@ -530,16 +492,12 @@ footer span {
 </header>
 
 
-<!-- 메인 화면 -->
-
 <section class="hero">
 
     <img
         class="ekko-art"
         id="ekkoImage"
-
         src="https://skins.nerfplz.com/art/245019_splash.jpg"
-
         alt="리그 오브 레전드 트루 데미지 에코"
 
         onerror="
@@ -554,10 +512,7 @@ footer span {
         "
     >
 
-    <div
-        class="image-error"
-        id="imageError"
-    >
+    <div class="image-error" id="imageError">
         에코 이미지를 불러오지 못했습니다.
     </div>
 
@@ -572,11 +527,11 @@ footer span {
         </h1>
 
         <h2>
-            필요한 공식 사이트를 한곳에, 주소모아!
+            원하는 사이트를 한곳에, 주소모아!
         </h2>
 
         <p>
-            분야별 검증된 공식 사이트를
+            다양한 분야의 사이트를
             쉽고 빠르게 찾아보세요.
         </p>
 
@@ -600,18 +555,23 @@ footer span {
 </section>
 
 
-<!-- 사이트 목록 -->
-
 <main>
 
     <div class="section-title">
 
-        <h2>공식 사이트 모아보기</h2>
+        <h2>사이트 모아보기</h2>
 
         <p>
             원하는 분야를 선택하고 사이트를 찾아보세요.
         </p>
 
+    </div>
+
+    <div class="notice">
+        안내: 아래 사이트는 외부 사이트 링크 모음입니다.
+        LINK EKKO가 해당 사이트의 운영 주체이거나 공식 제휴 관계임을 의미하지 않습니다.
+        콘텐츠의 저작권 및 이용 권한은 별도로 확인해 주세요.
+        성인 대상 사이트는 만 19세 이상만 이용할 수 있습니다.
     </div>
 
 
@@ -626,29 +586,15 @@ footer span {
             전체
         </button>
 
-        <button
-            onclick="chooseCategory('공공기관', this)"
-        >
-            공공기관
-        </button>
+        {% for category in categories %}
 
         <button
-            onclick="chooseCategory('교육', this)"
+            onclick="chooseCategory('{{ category }}', this)"
         >
-            교육
+            {{ category }}
         </button>
 
-        <button
-            onclick="chooseCategory('취업', this)"
-        >
-            취업
-        </button>
-
-        <button
-            onclick="chooseCategory('창업', this)"
-        >
-            창업
-        </button>
+        {% endfor %}
 
         <button
             onclick="chooseCategory('즐겨찾기', this)"
@@ -667,11 +613,8 @@ footer span {
 
         <article
             class="site"
-
             data-category="{{ site.category }}"
-
             data-search="{{ site.name }} {{ site.category }} {{ site.description }}"
-
             data-url="{{ site.url }}"
         >
 
@@ -694,7 +637,7 @@ footer span {
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    공식 사이트 방문하기 ↗
+                    사이트 방문하기 ↗
                 </a>
 
                 <button
@@ -721,15 +664,13 @@ footer span {
 </main>
 
 
-<!-- 하단 -->
-
 <footer>
 
     <h2>
         ⌛ LINK <span>EKKO</span> · 주소모아
     </h2>
 
-    더 나은 인터넷 생활을 위한 공식 사이트 모음 서비스
+    다양한 사이트를 한곳에서 편리하게!
 
     <p>
         Find it. Link it. LINK EKKO!
@@ -737,8 +678,6 @@ footer span {
 
 </footer>
 
-
-<!-- JavaScript 기능 -->
 
 <script>
 
@@ -907,9 +846,11 @@ updateFavorites();
 
 @app.route("/")
 def home():
+
     return render_template_string(
         HTML,
-        sites=SITES
+        sites=SITES,
+        categories=CATEGORIES
     )
 
 
