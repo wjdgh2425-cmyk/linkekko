@@ -17,7 +17,7 @@ SITES = [
         "description": "드라마, 예능, 영화 등 다양한 콘텐츠를 감상하는 OTT 서비스",
         "url": "https://www.tving.com/",
         "icon": "📺",
-        "tag": "K-콘텐츠"
+        "tag": "한국 콘텐츠"
     },
     {
         "category": "OTT·동영상",
@@ -41,12 +41,12 @@ SITES = [
         "description": "영화, 드라마, 예능 및 스포츠 콘텐츠를 감상하는 스트리밍 서비스",
         "url": "https://www.coupangplay.com/",
         "icon": "▶️",
-        "tag": "스포츠·엔터"
+        "tag": "스포츠·예능"
     },
     {
         "category": "OTT·동영상",
         "name": "유튜브",
-        "description": "영상, 음악, 라이브 방송 및 크리에이터 콘텐츠를 감상하는 동영상 플랫폼",
+        "description": "영상, 음악, 실시간 방송 및 크리에이터 콘텐츠를 감상하는 동영상 플랫폼",
         "url": "https://www.youtube.com/",
         "icon": "▶",
         "tag": "동영상"
@@ -57,18 +57,22 @@ CATEGORIES = list(dict.fromkeys(
     site["category"] for site in SITES
 ))
 
+# =====================================
+# 검색엔진 구조화 데이터
+# =====================================
+
 STRUCTURED_DATA = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "LINK EKKO",
     "alternateName": "링크 에코 주소모아",
     "url": BASE_URL,
-    "description": "분야별 사이트 주소를 모아 편리하게 찾아볼 수 있는 주소모아 서비스입니다.",
+    "description": "다양한 분야의 사이트 주소를 한곳에 모아 편리하게 찾아볼 수 있는 링크 모음 서비스입니다.",
     "inLanguage": "ko-KR"
 }
 
 # =====================================
-# 홈페이지 HTML
+# 홈페이지 화면
 # =====================================
 
 HTML = """
@@ -81,7 +85,7 @@ HTML = """
     <title>LINK EKKO | 링크 에코 주소모아</title>
 
     <meta name="description"
-          content="LINK EKKO 주소모아에서 티빙, 넷플릭스, 왓챠, 쿠팡플레이, 유튜브 등 다양한 OTT·동영상 사이트를 확인하세요.">
+          content="링크 에코 주소모아에서 티빙, 넷플릭스, 왓챠, 쿠팡플레이, 유튜브 등 다양한 OTT·동영상 사이트를 확인하세요.">
 
     <meta name="keywords"
           content="LINK EKKO, 링크 에코, 주소모아, 티빙, 넷플릭스, 왓챠, 쿠팡플레이, 유튜브">
@@ -96,7 +100,7 @@ HTML = """
     <meta property="og:type" content="website">
     <meta property="og:title" content="LINK EKKO | 링크 에코 주소모아">
     <meta property="og:description"
-          content="자주 찾는 사이트를 LINK EKKO에서 편리하게 확인하세요.">
+          content="자주 찾는 사이트를 링크 에코에서 편리하게 확인하세요.">
     <meta property="og:url" content="https://linkekko.onrender.com/">
 
     <script type="application/ld+json">
@@ -169,7 +173,6 @@ HTML = """
         .header-label {
             color: #9ba9c8;
             font-size: 13px;
-            letter-spacing: 1px;
         }
 
         .hero {
@@ -197,13 +200,12 @@ HTML = """
             border-radius: 30px;
             color: #00e5ff;
             font-size: 12px;
-            letter-spacing: 2px;
             margin-bottom: 20px;
         }
 
         .hero h1 {
             font-size: clamp(34px,5vw,58px);
-            line-height: 1.15;
+            line-height: 1.35;
             margin-bottom: 18px;
         }
 
@@ -422,7 +424,7 @@ HTML = """
             line-height: 1.9;
         }
 
-        /* 광고문의 영역 */
+        /* 광고문의 */
 
         .contact-section {
             max-width: 650px;
@@ -520,7 +522,7 @@ HTML = """
             }
 
             .header-label {
-                font-size: 10px;
+                font-size: 11px;
             }
 
             .hero {
@@ -554,22 +556,29 @@ HTML = """
 
     <header>
         <a class="logo" href="/">LINK <span>EKKO</span></a>
-        <div class="header-label">LINK COLLECTION SERVICE</div>
+        <div class="header-label">링크 모음 서비스</div>
     </header>
 
     <section class="hero">
-        <div class="hero-tag">WELCOME TO LINK EKKO</div>
-        <h1>YOUR LINK<br><span>YOUR WORLD.</span></h1>
+        <div class="hero-tag">링크 에코에 오신 것을 환영합니다</div>
+
+        <h1>
+            나만의 링크,<br>
+            <span>나만의 세상.</span>
+        </h1>
+
         <p>
             자주 찾는 사이트를 한곳에서.<br>
-            LINK EKKO에서 원하는 사이트를 쉽고 빠르게 찾아보세요.
+            링크 에코에서 원하는 사이트를 쉽고 빠르게 찾아보세요.
         </p>
     </section>
 
     <main class="container">
         <div class="section-heading">
-            <h2>EXPLORE <span>LINKS</span></h2>
-            <div class="site-count">등록된 사이트 {{ sites|length }}개</div>
+            <h2>사이트 <span>둘러보기</span></h2>
+            <div class="site-count">
+                등록된 사이트 {{ sites|length }}개
+            </div>
         </div>
 
         <input
@@ -581,7 +590,9 @@ HTML = """
         >
 
         <div class="filter-area">
-            <button class="filter-btn active" data-category="all">전체</button>
+            <button class="filter-btn active" data-category="all">
+                전체 사이트
+            </button>
 
             {% for category in categories %}
                 <button class="filter-btn" data-category="{{ category }}">
@@ -611,16 +622,20 @@ HTML = """
 
                 <div class="card-top">
                     <div class="site-icon">{{ site.icon }}</div>
+
                     <div>
                         <div class="site-name">{{ site.name }}</div>
                         <div class="site-category">{{ site.category }}</div>
                     </div>
                 </div>
 
-                <p class="site-description">{{ site.description }}</p>
+                <p class="site-description">
+                    {{ site.description }}
+                </p>
 
                 <div class="card-bottom">
                     <span class="site-tag">{{ site.tag }}</span>
+
                     <a
                         class="visit-btn"
                         href="{{ site.url }}"
@@ -637,22 +652,22 @@ HTML = """
         </div>
 
         <section class="intro">
-            <h2>LINK EKKO 주소모아</h2>
+            <h2>링크 에코 주소모아</h2>
+
             <p>
-                LINK EKKO는 OTT·동영상 분야의 사이트 주소를 한곳에 모아
+                링크 에코는 OTT·동영상 분야의 사이트 주소를 한곳에 모아
                 편리하게 확인할 수 있도록 돕는 링크 모음 서비스입니다.
                 검색 기능을 이용해 원하는 사이트를 빠르게 찾아보세요.
                 외부 사이트의 서비스 내용과 이용 조건은 각 사이트에서 확인해 주세요.
-                LINK EKKO는 외부 사이트의 운영 주체나 공식 제휴사가 아닙니다.
+                링크 에코는 외부 사이트의 운영 주체나 공식 제휴사가 아닙니다.
             </p>
         </section>
 
-        <!-- 광고문의 텔레그램 -->
-
         <section class="contact-section">
             <h2>광고 <span>문의</span></h2>
+
             <p>
-                LINK EKKO 광고 및 제휴 관련 문의는<br>
+                링크 에코 광고 및 제휴 관련 문의는<br>
                 아래 텔레그램으로 연락해 주세요.
             </p>
 
@@ -678,7 +693,7 @@ HTML = """
         <br>
         광고문의: @linkekko369
         <br>
-        © 2026 LINK EKKO. All rights reserved.
+        © 2026 링크 에코. 모든 권리 보유.
     </footer>
 
     <script>
@@ -709,6 +724,10 @@ HTML = """
 
                 button.classList.toggle("active", isFavorite);
                 button.textContent = isFavorite ? "♥" : "♡";
+                button.setAttribute(
+                    "aria-label",
+                    name + (isFavorite ? " 즐겨찾기 해제" : " 즐겨찾기 추가")
+                );
             });
         }
 
@@ -789,7 +808,7 @@ HTML = """
 """
 
 # =====================================
-# 홈페이지
+# 홈페이지 주소
 # =====================================
 
 @app.route("/")
@@ -820,11 +839,12 @@ def sitemap():
     </url>
 </urlset>
 """
+
     return Response(xml, mimetype="application/xml")
 
 
 # =====================================
-# robots.txt
+# 검색엔진 안내 파일
 # =====================================
 
 @app.route("/robots.txt")
@@ -834,6 +854,7 @@ Allow: /
 
 Sitemap: {BASE_URL}/sitemap.xml
 """
+
     return Response(content, mimetype="text/plain")
 
 
@@ -842,4 +863,8 @@ Sitemap: {BASE_URL}/sitemap.xml
 # =====================================
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(
+        host="0.0.0.0",
+        port=5000,
+        debug=False
+    )
