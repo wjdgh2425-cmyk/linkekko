@@ -3,7 +3,10 @@ from flask import Flask, render_template_string
 
 app = Flask(__name__)
 
-# 공식 사이트 목록
+# =====================================
+# LINK EKKO 공식 사이트 데이터
+# =====================================
+
 SITES = [
     {
         "category": "공공기관",
@@ -43,16 +46,24 @@ SITES = [
     }
 ]
 
+
+# =====================================
+# 홈페이지 HTML
+# =====================================
+
 HTML = """
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>LINK EKKO | 주소모아</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -104,12 +115,13 @@ nav a:hover {
 /* 메인 화면 */
 
 .hero {
-    min-height: 550px;
+    min-height: 570px;
     padding: 75px 7%;
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
+
     background:
         radial-gradient(
             circle at 80% 50%,
@@ -125,30 +137,57 @@ nav a:hover {
     position: absolute;
     right: 0;
     top: 0;
-    width: 60%;
+
+    width: 65%;
     height: 100%;
+
     object-fit: cover;
     object-position: center 25%;
+
     z-index: 0;
     opacity: 0.95;
+
     -webkit-mask-image:
-        linear-gradient(to right, transparent 0%, black 38%);
+        linear-gradient(
+            to right,
+            transparent 0%,
+            black 38%
+        );
+
     mask-image:
-        linear-gradient(to right, transparent 0%, black 38%);
+        linear-gradient(
+            to right,
+            transparent 0%,
+            black 38%
+        );
 }
 
-/* 에코 이미지 위의 어두운 효과 */
+/* 이미지 오류 안내 */
+
+.image-error {
+    display: none;
+    position: absolute;
+    right: 8%;
+    bottom: 25px;
+    z-index: 2;
+    color: #9fb8d9;
+    font-size: 12px;
+}
+
+/* 어두운 오버레이 */
 
 .hero::after {
     content: "";
     position: absolute;
     inset: 0;
+
     background: linear-gradient(
         90deg,
         #070b1c 0%,
         rgba(7, 11, 28, 0.95) 34%,
-        rgba(7, 11, 28, 0.2) 100%
+        rgba(7, 11, 28, 0.15) 100%
     );
+
     z-index: 1;
     pointer-events: none;
 }
@@ -194,9 +233,11 @@ nav a:hover {
     display: flex;
     margin-top: 35px;
     max-width: 650px;
+
     border: 2px solid #00dfff;
     border-radius: 15px;
     overflow: hidden;
+
     background: #111a35;
     box-shadow: 0 0 22px #00cfff44;
 }
@@ -205,8 +246,10 @@ nav a:hover {
     flex: 1;
     min-width: 0;
     padding: 18px;
+
     border: none;
     outline: none;
+
     background: transparent;
     color: white;
     font-size: 16px;
@@ -215,8 +258,10 @@ nav a:hover {
 .search-box button {
     border: none;
     padding: 0 27px;
+
     color: #001321;
     background: #00dfff;
+
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;
@@ -247,7 +292,7 @@ main {
     color: #aebfdf;
 }
 
-/* 카테고리 버튼 */
+/* 카테고리 */
 
 .categories {
     display: flex;
@@ -259,10 +304,13 @@ main {
 
 .categories button {
     padding: 12px 22px;
+
     border: 1px solid #29476b;
     border-radius: 30px;
+
     color: #dbeaff;
     background: #101831;
+
     cursor: pointer;
     font-size: 15px;
 }
@@ -279,20 +327,25 @@ main {
 
 .grid {
     display: grid;
+
     grid-template-columns:
         repeat(auto-fit, minmax(220px, 1fr));
+
     gap: 20px;
 }
 
 .site {
     padding: 23px;
+
     border: 1px solid #27618b;
     border-radius: 18px;
+
     background: linear-gradient(
         145deg,
         #17284b,
         #101329
     );
+
     box-shadow: 0 8px 25px #0008;
     transition: 0.2s;
 }
@@ -330,8 +383,10 @@ main {
 .site a {
     display: inline-block;
     padding: 11px 14px;
+
     border-radius: 9px;
     background: #124bd8;
+
     color: white;
     text-decoration: none;
     font-weight: bold;
@@ -346,9 +401,12 @@ main {
 .favorite {
     border: 1px solid #47658c;
     border-radius: 9px;
+
     padding: 9px 12px;
+
     background: #172442;
     color: white;
+
     cursor: pointer;
     font-size: 17px;
 }
@@ -356,6 +414,8 @@ main {
 .favorite.saved {
     color: #ffdc55;
 }
+
+/* 검색 결과 없음 */
 
 #empty {
     display: none;
@@ -369,8 +429,10 @@ main {
 footer {
     padding: 35px 20px;
     text-align: center;
+
     color: #a9badc;
     border-top: 1px solid #174d70;
+
     background: #090e20;
 }
 
@@ -378,9 +440,10 @@ footer span {
     color: #00dfff;
 }
 
-/* 모바일 화면 */
+/* 모바일 */
 
 @media (max-width: 700px) {
+
     header {
         padding: 15px 18px;
     }
@@ -405,11 +468,21 @@ footer span {
         height: 65%;
         top: auto;
         bottom: 0;
-        opacity: 0.65;
+        opacity: 0.7;
+
         -webkit-mask-image:
-            linear-gradient(to bottom, transparent 0%, black 35%);
+            linear-gradient(
+                to bottom,
+                transparent 0%,
+                black 35%
+            );
+
         mask-image:
-            linear-gradient(to bottom, transparent 0%, black 35%);
+            linear-gradient(
+                to bottom,
+                transparent 0%,
+                black 35%
+            );
     }
 
     .hero::after {
@@ -432,13 +505,18 @@ footer span {
     main {
         padding: 25px 16px 45px;
     }
+
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- 상단 메뉴 -->
+
 <header>
+
     <div class="logo">
         ⌛ LINK <span>EKKO</span> | 주소모아
     </div>
@@ -448,16 +526,40 @@ footer span {
         <a href="#categories">카테고리</a>
         <a href="#sites">사이트</a>
     </nav>
+
 </header>
+
+
+<!-- 메인 화면 -->
 
 <section class="hero">
 
     <img
         class="ekko-art"
-        src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ekko_6.jpg"
+        id="ekkoImage"
+
+        src="https://skins.nerfplz.com/art/245019_splash.jpg"
+
         alt="리그 오브 레전드 트루 데미지 에코"
-        onerror="this.style.display='none'"
+
+        onerror="
+            if (!this.dataset.fallback) {
+                this.dataset.fallback = '1';
+                this.src =
+                'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ekko_5.jpg';
+            } else {
+                this.style.display = 'none';
+                document.getElementById('imageError').style.display = 'block';
+            }
+        "
     >
+
+    <div
+        class="image-error"
+        id="imageError"
+    >
+        에코 이미지를 불러오지 못했습니다.
+    </div>
 
     <div class="hero-content">
 
@@ -479,6 +581,7 @@ footer span {
         </p>
 
         <div class="search-box">
+
             <input
                 id="search"
                 type="text"
@@ -489,46 +592,74 @@ footer span {
             <button onclick="filterSites()">
                 검색
             </button>
+
         </div>
 
     </div>
+
 </section>
+
+
+<!-- 사이트 목록 -->
 
 <main>
 
     <div class="section-title">
+
         <h2>공식 사이트 모아보기</h2>
-        <p>원하는 분야를 선택하고 사이트를 찾아보세요.</p>
+
+        <p>
+            원하는 분야를 선택하고 사이트를 찾아보세요.
+        </p>
+
     </div>
+
+
+    <!-- 카테고리 -->
 
     <div class="categories" id="categories">
 
-        <button class="active"
-            onclick="chooseCategory('전체', this)">
+        <button
+            class="active"
+            onclick="chooseCategory('전체', this)"
+        >
             전체
         </button>
 
-        <button onclick="chooseCategory('공공기관', this)">
+        <button
+            onclick="chooseCategory('공공기관', this)"
+        >
             공공기관
         </button>
 
-        <button onclick="chooseCategory('교육', this)">
+        <button
+            onclick="chooseCategory('교육', this)"
+        >
             교육
         </button>
 
-        <button onclick="chooseCategory('취업', this)">
+        <button
+            onclick="chooseCategory('취업', this)"
+        >
             취업
         </button>
 
-        <button onclick="chooseCategory('창업', this)">
+        <button
+            onclick="chooseCategory('창업', this)"
+        >
             창업
         </button>
 
-        <button onclick="chooseCategory('즐겨찾기', this)">
+        <button
+            onclick="chooseCategory('즐겨찾기', this)"
+        >
             ★ 즐겨찾기
         </button>
 
     </div>
+
+
+    <!-- 사이트 카드 -->
 
     <section class="grid" id="sites">
 
@@ -536,16 +667,25 @@ footer span {
 
         <article
             class="site"
+
             data-category="{{ site.category }}"
+
             data-search="{{ site.name }} {{ site.category }} {{ site.description }}"
+
             data-url="{{ site.url }}"
         >
 
-            <small>{{ site.category }}</small>
+            <small>
+                {{ site.category }}
+            </small>
 
-            <h2>{{ site.name }}</h2>
+            <h2>
+                {{ site.name }}
+            </h2>
 
-            <p>{{ site.description }}</p>
+            <p>
+                {{ site.description }}
+            </p>
 
             <div class="site-actions">
 
@@ -573,11 +713,15 @@ footer span {
 
     </section>
 
+
     <div id="empty">
         검색 결과가 없습니다.
     </div>
 
 </main>
+
+
+<!-- 하단 -->
 
 <footer>
 
@@ -593,37 +737,53 @@ footer span {
 
 </footer>
 
+
+<!-- JavaScript 기능 -->
+
 <script>
 
 let selectedCategory = "전체";
 
+
 /* 즐겨찾기 불러오기 */
 
 function getFavorites() {
+
     try {
+
         return JSON.parse(
             localStorage.getItem("linkekko_favorites") || "[]"
         );
+
     } catch (error) {
+
         return [];
+
     }
+
 }
+
 
 /* 즐겨찾기 추가 및 제거 */
 
 function toggleFavorite(button) {
 
     const card = button.closest(".site");
+
     const url = card.dataset.url;
 
     let favorites = getFavorites();
 
     if (favorites.includes(url)) {
+
         favorites = favorites.filter(
             item => item !== url
         );
+
     } else {
+
         favorites.push(url);
+
     }
 
     localStorage.setItem(
@@ -632,8 +792,11 @@ function toggleFavorite(button) {
     );
 
     updateFavorites();
+
     filterSites();
+
 }
+
 
 /* 즐겨찾기 표시 */
 
@@ -654,7 +817,9 @@ function updateFavorites() {
         button.textContent = saved ? "★" : "☆";
 
     });
+
 }
+
 
 /* 카테고리 선택 */
 
@@ -665,13 +830,17 @@ function chooseCategory(category, button) {
     document.querySelectorAll(
         ".categories button"
     ).forEach(item => {
+
         item.classList.remove("active");
+
     });
 
     button.classList.add("active");
 
     filterSites();
+
 }
+
 
 /* 검색 및 필터 */
 
@@ -717,7 +886,9 @@ function filterSites() {
 
     document.getElementById("empty").style.display =
         count === 0 ? "block" : "none";
+
 }
+
 
 /* 페이지 시작 */
 
@@ -730,9 +901,16 @@ updateFavorites();
 """
 
 
+# =====================================
+# Flask 홈페이지 실행
+# =====================================
+
 @app.route("/")
 def home():
-    return render_template_string(HTML, sites=SITES)
+    return render_template_string(
+        HTML,
+        sites=SITES
+    )
 
 
 if __name__ == "__main__":
