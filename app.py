@@ -8,7 +8,6 @@ app = Flask(__name__)
 
 BASE_URL = "https://linkekko.onrender.com"
 
-# Render 영구 디스크를 연결하면 DATABASE_PATH를 /var/data/linkekko.db로 설정
 DB_PATH = os.environ.get(
     "DATABASE_PATH",
     os.path.join(app.instance_path, "linkekko.db")
@@ -65,13 +64,12 @@ CATEGORIES = [
     "만화·웹툰"
 ]
 
-# 각 사이트에 고유 번호 부여
 for index, site in enumerate(SITES):
     site["id"] = index
 
 
 # =====================================
-# 데이터베이스 생성
+# 데이터베이스
 # =====================================
 
 def get_db():
@@ -94,10 +92,6 @@ def init_db():
 init_db()
 
 
-# =====================================
-# 방문 기록 가져오기
-# =====================================
-
 def get_visit_counts():
     with get_db() as conn:
         rows = conn.execute(
@@ -112,7 +106,6 @@ def get_visit_counts():
 
 def get_ranked_sites():
     counts = get_visit_counts()
-
     ranked = []
 
     for site in SITES:
@@ -120,8 +113,6 @@ def get_ranked_sites():
         item["visit_count"] = counts.get(site["id"], 0)
         ranked.append(item)
 
-    # 실제 방문 횟수가 높은 사이트가 먼저 표시됨
-    # 방문 횟수가 같으면 기존 추천 순위로 정렬
     ranked.sort(
         key=lambda site: (
             -site["visit_count"],
@@ -228,7 +219,7 @@ header {
 
 .hero {
     text-align: center;
-    padding: 115px 20px 70px;
+    padding: 100px 20px 65px;
     position: relative;
     overflow: hidden;
     background:
@@ -278,7 +269,7 @@ header {
     color: #d0d5e5;
     line-height: 1.8;
     font-size: 15px;
-    margin: 0 auto 30px;
+    margin: 0 auto 25px;
 }
 
 .search-box {
@@ -316,6 +307,67 @@ header {
     font-weight: bold;
     cursor: pointer;
 }
+
+/* GIANTS 음악 플레이어 */
+
+.music-section {
+    width: min(440px, 100%);
+    margin: 28px auto 0;
+    padding: 17px;
+    border: 1px solid rgba(167,139,250,0.38);
+    border-radius: 18px;
+    background: rgba(8,11,24,0.82);
+    box-shadow: 0 0 30px rgba(124,58,237,0.2);
+    backdrop-filter: blur(10px);
+}
+
+.music-title {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.music-artist {
+    font-size: 11px;
+    color: #a5b4fc;
+    margin-bottom: 14px;
+}
+
+.music-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #080b18;
+}
+
+.music-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.music-button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px 15px;
+    border: 0;
+    border-radius: 10px;
+    background: linear-gradient(135deg,#7c3aed,#2563eb);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.music-status {
+    color: #aab3cc;
+    font-size: 11px;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+/* 본문 */
 
 .container {
     max-width: 1150px;
@@ -627,7 +679,7 @@ footer a {
     }
 
     .hero {
-        padding: 85px 18px 55px;
+        padding: 75px 18px 45px;
         min-height: 540px;
         background-position: 58% top;
         background-size: auto 100%;
@@ -709,12 +761,37 @@ footer a {
             <button onclick="searchSites()">검색</button>
         </div>
 
+        <!-- 트루 데미지 GIANTS 음악 -->
+
+        <section class="music-section" aria-label="링크에코 배경 음악">
+
+            <div class="music-title">🎵 링크에코 대표 음악</div>
+            <div class="music-artist">TRUE DAMAGE - GIANTS</div>
+
+            <div class="music-frame">
+                <div id="giants-player"></div>
+            </div>
+
+            <button
+                type="button"
+                class="music-button"
+                id="musicButton"
+                onclick="startMusic()"
+            >
+                ▶ 음악 재생하기
+            </button>
+
+            <div class="music-status" id="musicStatus">
+                페이지 접속 시 자동 재생을 시도합니다.
+                자동 재생이 차단되면 재생 버튼을 눌러주세요.
+            </div>
+
+        </section>
+
     </div>
 </section>
 
 <main class="container">
-
-    <!-- 실제 방문 기록 기반 인기 순위 -->
 
     <section class="popular-section">
 
@@ -729,10 +806,7 @@ footer a {
         <div class="popular-grid">
 
             {% for site in popular_sites %}
-            <a
-                class="popular-card"
-                href="/go/{{ site.id }}"
-            >
+            <a class="popular-card" href="/go/{{ site.id }}">
 
                 <div class="rank-number {% if loop.index <= 3 %}top-three{% endif %}">
                     TOP {{ loop.index }}
@@ -753,7 +827,6 @@ footer a {
                 </div>
 
                 <h3>{{ site.name }}</h3>
-
                 <p>{{ site.description }}</p>
 
                 <div class="popular-count">
@@ -768,8 +841,6 @@ footer a {
         </div>
 
     </section>
-
-    <!-- 카테고리 -->
 
     <nav class="category-list" aria-label="사이트 카테고리">
 
@@ -792,8 +863,6 @@ footer a {
         <h2 id="sectionTitle">전체 사이트</h2>
         <span class="result-count" id="resultCount"></span>
     </div>
-
-    <!-- 전체 사이트 목록 -->
 
     <section class="site-grid" id="siteGrid">
 
@@ -832,17 +901,13 @@ footer a {
             </div>
 
             <h3>{{ site.name }}</h3>
-
             <p>{{ site.description }}</p>
 
             <div class="site-visit-count">
                 누적 방문 {{ "{:,}".format(site.visit_count) }}회
             </div>
 
-            <a
-                class="visit-link"
-                href="/go/{{ site.id }}"
-            >
+            <a class="visit-link" href="/go/{{ site.id }}">
                 공식 사이트 방문 →
             </a>
 
@@ -890,6 +955,100 @@ footer a {
 </footer>
 
 <script>
+/* =====================================
+   GIANTS 유튜브 자동 재생
+===================================== */
+
+let giantsPlayer;
+let musicReady = false;
+
+function onYouTubeIframeAPIReady() {
+    giantsPlayer = new YT.Player("giants-player", {
+        videoId: "sVZpHFXcFJw",
+
+        playerVars: {
+            autoplay: 1,
+            controls: 1,
+            playsinline: 1,
+            rel: 0
+        },
+
+        events: {
+            onReady: function(event) {
+                musicReady = true;
+
+                // 페이지 접속 시 소리와 함께 자동 재생 시도
+                event.target.unMute();
+                event.target.setVolume(70);
+                event.target.playVideo();
+
+                document.getElementById("musicStatus").textContent =
+                    "GIANTS 자동 재생을 시도하고 있습니다.";
+            },
+
+            onStateChange: function(event) {
+                const button = document.getElementById("musicButton");
+                const status = document.getElementById("musicStatus");
+
+                if (event.data === YT.PlayerState.PLAYING) {
+                    button.style.display = "none";
+                    status.textContent = "♪ TRUE DAMAGE - GIANTS 재생 중";
+                }
+
+                if (
+                    event.data === YT.PlayerState.PAUSED ||
+                    event.data === YT.PlayerState.ENDED
+                ) {
+                    button.style.display = "block";
+                    button.textContent = "▶ 음악 재생하기";
+                    status.textContent = "음악이 일시정지되었습니다.";
+                }
+            },
+
+            onAutoplayBlocked: function() {
+                showMusicButton();
+            },
+
+            onError: function() {
+                showMusicButton();
+                document.getElementById("musicStatus").textContent =
+                    "음악을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
+            }
+        }
+    });
+}
+
+function showMusicButton() {
+    document.getElementById("musicButton").style.display = "block";
+    document.getElementById("musicStatus").textContent =
+        "브라우저가 자동 재생을 차단했습니다. 아래 버튼을 눌러 음악을 재생해주세요.";
+}
+
+function startMusic() {
+    if (!musicReady || !giantsPlayer) {
+        document.getElementById("musicStatus").textContent =
+            "음악 플레이어를 준비하고 있습니다. 잠시 후 다시 눌러주세요.";
+        return;
+    }
+
+    giantsPlayer.unMute();
+    giantsPlayer.setVolume(70);
+    giantsPlayer.playVideo();
+
+    document.getElementById("musicStatus").textContent =
+        "GIANTS 재생을 요청했습니다.";
+}
+
+// 유튜브 공식 플레이어 API 불러오기
+const youtubeScript = document.createElement("script");
+youtubeScript.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(youtubeScript);
+
+
+/* =====================================
+   사이트 검색 및 카테고리
+===================================== */
+
 let currentCategory = "전체";
 let favoritesOnly = false;
 
@@ -982,6 +1141,11 @@ document.getElementById("searchInput").addEventListener(
     applyFilters
 );
 
+
+/* =====================================
+   즐겨찾기
+===================================== */
+
 function getFavorites() {
     try {
         return JSON.parse(
@@ -1041,17 +1205,11 @@ applyFilters();
 def home():
     ranked_sites = get_ranked_sites()
 
-    # 전체 사이트 카드에도 방문 횟수 표시
-    sites_with_counts = ranked_sites
-
-    # 인기 사이트 TOP 10
-    popular_sites = ranked_sites[:10]
-
     return render_template_string(
         HTML,
-        sites=sites_with_counts,
+        sites=ranked_sites,
         categories=CATEGORIES,
-        popular_sites=popular_sites
+        popular_sites=ranked_sites[:10]
     )
 
 
