@@ -7,41 +7,45 @@ app = Flask(__name__)
 
 BASE_URL = "https://linkekko.onrender.com"
 
+# =====================================
+# 사이트 목록 및 인기 순위
+# =====================================
+
 SITES = [
     # OTT · 동영상
-    {"category": "OTT·동영상", "name": "티빙", "description": "드라마, 예능, 영화와 실시간 TV", "url": "https://www.tving.com/", "icon": "📺"},
-    {"category": "OTT·동영상", "name": "넷플릭스", "description": "다양한 영화와 오리지널 시리즈", "url": "https://www.netflix.com/kr", "icon": "🎬"},
-    {"category": "OTT·동영상", "name": "왓챠", "description": "영화와 드라마 감상 서비스", "url": "https://watcha.com/", "icon": "🍿"},
-    {"category": "OTT·동영상", "name": "쿠팡플레이", "description": "영화, 드라마, 스포츠 콘텐츠", "url": "https://www.coupangplay.com/", "icon": "🎥"},
-    {"category": "OTT·동영상", "name": "유튜브", "description": "다양한 영상과 크리에이터 콘텐츠", "url": "https://www.youtube.com/", "icon": "▶️"},
-    {"category": "OTT·동영상", "name": "웨이브", "description": "방송 프로그램과 영화 감상", "url": "https://www.wavve.com/", "icon": "🌊"},
-    {"category": "OTT·동영상", "name": "디즈니플러스", "description": "디즈니, 마블, 스타워즈 콘텐츠", "url": "https://www.disneyplus.com/ko-kr", "icon": "✨"},
-    {"category": "OTT·동영상", "name": "라프텔", "description": "애니메이션 전문 스트리밍", "url": "https://laftel.net/", "icon": "🌸"},
+    {"category": "OTT·동영상", "name": "티빙", "description": "드라마, 예능, 영화와 실시간 TV", "url": "https://www.tving.com/", "domain": "tving.com", "icon": "📺", "rank": 5},
+    {"category": "OTT·동영상", "name": "넷플릭스", "description": "다양한 영화와 오리지널 시리즈", "url": "https://www.netflix.com/kr", "domain": "netflix.com", "icon": "🎬", "rank": 2},
+    {"category": "OTT·동영상", "name": "왓챠", "description": "영화와 드라마 감상 서비스", "url": "https://watcha.com/", "domain": "watcha.com", "icon": "🍿"},
+    {"category": "OTT·동영상", "name": "쿠팡플레이", "description": "영화, 드라마, 스포츠 콘텐츠", "url": "https://www.coupangplay.com/", "domain": "coupangplay.com", "icon": "🎥", "rank": 9},
+    {"category": "OTT·동영상", "name": "유튜브", "description": "다양한 영상과 크리에이터 콘텐츠", "url": "https://www.youtube.com/", "domain": "youtube.com", "icon": "▶️", "rank": 1},
+    {"category": "OTT·동영상", "name": "웨이브", "description": "방송 프로그램과 영화 감상", "url": "https://www.wavve.com/", "domain": "wavve.com", "icon": "🌊"},
+    {"category": "OTT·동영상", "name": "디즈니플러스", "description": "디즈니, 마블, 스타워즈 콘텐츠", "url": "https://www.disneyplus.com/ko-kr", "domain": "disneyplus.com", "icon": "✨", "rank": 8},
+    {"category": "OTT·동영상", "name": "라프텔", "description": "애니메이션 전문 스트리밍", "url": "https://laftel.net/", "domain": "laftel.net", "icon": "🌸"},
 
     # 게임
-    {"category": "게임", "name": "넥슨", "description": "다양한 온라인 게임과 게임 소식", "url": "https://www.nexon.com/", "icon": "🎮"},
-    {"category": "게임", "name": "라이엇 게임즈", "description": "리그 오브 레전드와 라이엇 게임", "url": "https://www.riotgames.com/", "icon": "⚔️"},
-    {"category": "게임", "name": "스팀", "description": "PC 게임 구매와 라이브러리", "url": "https://store.steampowered.com/", "icon": "🕹️"},
-    {"category": "게임", "name": "플레이스테이션", "description": "플레이스테이션 게임과 콘솔 정보", "url": "https://www.playstation.com/ko-kr/", "icon": "🎯"},
-    {"category": "게임", "name": "닌텐도", "description": "닌텐도 게임과 콘솔 정보", "url": "https://www.nintendo.com/kr/", "icon": "🍄"},
-    {"category": "게임", "name": "배틀그라운드", "description": "배틀그라운드 공식 홈페이지", "url": "https://pubg.com/ko-kr", "icon": "🔫"},
+    {"category": "게임", "name": "넥슨", "description": "다양한 온라인 게임과 게임 소식", "url": "https://www.nexon.com/", "domain": "nexon.com", "icon": "🎮"},
+    {"category": "게임", "name": "라이엇 게임즈", "description": "리그 오브 레전드와 라이엇 게임", "url": "https://www.riotgames.com/", "domain": "riotgames.com", "icon": "⚔️"},
+    {"category": "게임", "name": "스팀", "description": "PC 게임 구매와 라이브러리", "url": "https://store.steampowered.com/", "domain": "steampowered.com", "icon": "🕹️", "rank": 3},
+    {"category": "게임", "name": "플레이스테이션", "description": "플레이스테이션 게임과 콘솔 정보", "url": "https://www.playstation.com/ko-kr/", "domain": "playstation.com", "icon": "🎯"},
+    {"category": "게임", "name": "닌텐도", "description": "닌텐도 게임과 콘솔 정보", "url": "https://www.nintendo.com/kr/", "domain": "nintendo.com", "icon": "🍄"},
+    {"category": "게임", "name": "배틀그라운드", "description": "배틀그라운드 공식 홈페이지", "url": "https://pubg.com/ko-kr", "domain": "pubg.com", "icon": "🔫", "rank": 7},
 
     # 실시간 방송
-    {"category": "실시간 방송", "name": "SOOP", "description": "실시간 방송과 스트리머 콘텐츠", "url": "https://www.sooplive.co.kr/", "icon": "📡"},
-    {"category": "실시간 방송", "name": "치지직", "description": "게임과 다양한 실시간 방송", "url": "https://chzzk.naver.com/", "icon": "🟢"},
-    {"category": "실시간 방송", "name": "유튜브 라이브", "description": "유튜브 실시간 스트리밍", "url": "https://www.youtube.com/live", "icon": "🔴"},
-    {"category": "실시간 방송", "name": "틱톡", "description": "숏폼 영상과 라이브 방송", "url": "https://www.tiktok.com/", "icon": "🎵"},
-    {"category": "실시간 방송", "name": "킥", "description": "글로벌 실시간 스트리밍 플랫폼", "url": "https://kick.com/", "icon": "💚"},
+    {"category": "실시간 방송", "name": "SOOP", "description": "실시간 방송과 스트리머 콘텐츠", "url": "https://www.sooplive.co.kr/", "domain": "sooplive.co.kr", "icon": "📡"},
+    {"category": "실시간 방송", "name": "치지직", "description": "게임과 다양한 실시간 방송", "url": "https://chzzk.naver.com/", "domain": "chzzk.naver.com", "icon": "🟢", "rank": 6},
+    {"category": "실시간 방송", "name": "유튜브 라이브", "description": "유튜브 실시간 스트리밍", "url": "https://www.youtube.com/live", "domain": "youtube.com", "icon": "🔴"},
+    {"category": "실시간 방송", "name": "틱톡", "description": "숏폼 영상과 라이브 방송", "url": "https://www.tiktok.com/", "domain": "tiktok.com", "icon": "🎵"},
+    {"category": "실시간 방송", "name": "킥", "description": "글로벌 실시간 스트리밍 플랫폼", "url": "https://kick.com/", "domain": "kick.com", "icon": "💚"},
 
     # 만화 · 웹툰
-    {"category": "만화·웹툰", "name": "네이버웹툰", "description": "다양한 장르의 인기 웹툰", "url": "https://comic.naver.com/", "icon": "📗"},
-    {"category": "만화·웹툰", "name": "카카오웹툰", "description": "인기 웹툰과 독점 연재 작품", "url": "https://webtoon.kakao.com/", "icon": "📙"},
-    {"category": "만화·웹툰", "name": "카카오페이지", "description": "웹툰과 웹소설 콘텐츠", "url": "https://page.kakao.com/", "icon": "📚"},
-    {"category": "만화·웹툰", "name": "네이버 시리즈", "description": "웹툰과 웹소설 감상", "url": "https://series.naver.com/", "icon": "📖"},
-    {"category": "만화·웹툰", "name": "레진코믹스", "description": "다양한 장르의 웹툰 플랫폼", "url": "https://www.lezhin.com/", "icon": "🎨"},
-    {"category": "만화·웹툰", "name": "봄툰", "description": "다양한 장르의 웹툰 플랫폼", "url": "https://www.bomtoon.com/", "icon": "🌷"},
-    {"category": "만화·웹툰", "name": "리디", "description": "웹툰, 웹소설과 전자책", "url": "https://ridibooks.com/", "icon": "📕"},
-    {"category": "만화·웹툰", "name": "미스터블루", "description": "만화와 웹툰 콘텐츠", "url": "https://www.mrblue.com/", "icon": "🖌️"},
+    {"category": "만화·웹툰", "name": "네이버웹툰", "description": "다양한 장르의 인기 웹툰", "url": "https://comic.naver.com/", "domain": "comic.naver.com", "icon": "📗", "rank": 4},
+    {"category": "만화·웹툰", "name": "카카오웹툰", "description": "인기 웹툰과 독점 연재 작품", "url": "https://webtoon.kakao.com/", "domain": "webtoon.kakao.com", "icon": "📙"},
+    {"category": "만화·웹툰", "name": "카카오페이지", "description": "웹툰과 웹소설 콘텐츠", "url": "https://page.kakao.com/", "domain": "page.kakao.com", "icon": "📚", "rank": 10},
+    {"category": "만화·웹툰", "name": "네이버 시리즈", "description": "웹툰과 웹소설 감상", "url": "https://series.naver.com/", "domain": "series.naver.com", "icon": "📖"},
+    {"category": "만화·웹툰", "name": "레진코믹스", "description": "다양한 장르의 웹툰 플랫폼", "url": "https://www.lezhin.com/", "domain": "lezhin.com", "icon": "🎨"},
+    {"category": "만화·웹툰", "name": "봄툰", "description": "다양한 장르의 웹툰 플랫폼", "url": "https://www.bomtoon.com/", "domain": "bomtoon.com", "icon": "🌷"},
+    {"category": "만화·웹툰", "name": "리디", "description": "웹툰, 웹소설과 전자책", "url": "https://ridibooks.com/", "domain": "ridibooks.com", "icon": "📕"},
+    {"category": "만화·웹툰", "name": "미스터블루", "description": "만화와 웹툰 콘텐츠", "url": "https://www.mrblue.com/", "domain": "mrblue.com", "icon": "🖌️"},
 ]
 
 CATEGORIES = [
@@ -52,6 +56,16 @@ CATEGORIES = [
     "만화·웹툰"
 ]
 
+# 인기 순위가 지정된 사이트 10개
+POPULAR_SITES = sorted(
+    [site for site in SITES if "rank" in site],
+    key=lambda site: site["rank"]
+)
+
+# =====================================
+# 홈페이지
+# =====================================
+
 HTML = """
 <!DOCTYPE html>
 <html lang="ko">
@@ -61,8 +75,8 @@ HTML = """
 
 <title>링크에코 | 분야별 공식 사이트 주소모아</title>
 
-<meta name="description" content="링크에코는 OTT·동영상, 게임, 실시간 방송, 만화·웹툰 분야의 공식 사이트 주소를 한곳에 모아 편리하게 확인할 수 있는 주소모아 서비스입니다.">
-<meta name="keywords" content="링크에코, 주소모아, 공식사이트, OTT, 게임, 실시간방송, 만화, 웹툰">
+<meta name="description" content="링크에코는 OTT·동영상, 게임, 실시간 방송, 만화·웹툰 분야의 공식 사이트 주소와 인기 사이트를 한곳에 모아 제공하는 주소모아 서비스입니다.">
+<meta name="keywords" content="링크에코, 주소모아, 인기사이트, 공식사이트, OTT, 게임, 실시간방송, 만화, 웹툰">
 <meta name="robots" content="index, follow">
 <meta name="google-site-verification" content="pPTsfFdNbqdZlwp9cF4Bp_mVbMWP-YJ_HMiEBsNr7B4">
 
@@ -70,7 +84,7 @@ HTML = """
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="링크에코 | 분야별 공식 사이트 주소모아">
-<meta property="og:description" content="자주 찾는 공식 사이트를 링크에코에서 한눈에 확인하세요.">
+<meta property="og:description" content="자주 찾는 공식 사이트와 인기 사이트를 링크에코에서 확인하세요.">
 <meta property="og:url" content="https://linkekko.onrender.com/">
 <meta property="og:site_name" content="링크에코">
 
@@ -80,7 +94,7 @@ HTML = """
   "@type": "WebSite",
   "name": "링크에코",
   "url": "https://linkekko.onrender.com/",
-  "description": "분야별 공식 사이트 주소를 모아 제공하는 주소모아 서비스"
+  "description": "분야별 공식 사이트 주소와 인기 사이트를 모아 제공하는 주소모아 서비스"
 }
 </script>
 
@@ -93,8 +107,8 @@ body {
     margin: 0;
     font-family: 'Pretendard', 'Noto Sans KR', Arial, sans-serif;
     background:
-        radial-gradient(circle at 15% 10%, rgba(94, 48, 180, 0.23), transparent 35%),
-        radial-gradient(circle at 85% 20%, rgba(0, 145, 255, 0.16), transparent 35%),
+        radial-gradient(circle at 15% 10%, rgba(94,48,180,0.23), transparent 35%),
+        radial-gradient(circle at 85% 20%, rgba(0,145,255,0.16), transparent 35%),
         #080b18;
     color: #fff;
     min-height: 100vh;
@@ -112,7 +126,7 @@ header {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid rgba(255,255,255,0.08);
-    background: rgba(8, 11, 24, 0.75);
+    background: rgba(8,11,24,0.75);
     backdrop-filter: blur(12px);
     position: sticky;
     top: 0;
@@ -123,7 +137,7 @@ header {
     font-size: 25px;
     font-weight: 900;
     letter-spacing: -1px;
-    background: linear-gradient(90deg, #a78bfa, #38bdf8);
+    background: linear-gradient(90deg,#a78bfa,#38bdf8);
     -webkit-background-clip: text;
     color: transparent;
 }
@@ -134,37 +148,30 @@ header {
     border: 1px solid rgba(167,139,250,0.4);
     padding: 9px 15px;
     border-radius: 20px;
-    transition: 0.2s;
 }
 
 .header-contact:hover {
     background: rgba(139,92,246,0.2);
 }
 
-/* =================================
-   트루 데미지 에코 메인 배경
-   이미지가 더 크게 보이도록 높이 확대
-================================= */
+/* 에코 배경 */
 
 .hero {
     text-align: center;
     padding: 115px 20px 70px;
     position: relative;
     overflow: hidden;
-
     background:
         linear-gradient(
             90deg,
-            rgba(8, 11, 24, 0.92) 0%,
-            rgba(8, 11, 24, 0.65) 40%,
-            rgba(8, 11, 24, 0.12) 100%
+            rgba(8,11,24,0.92) 0%,
+            rgba(8,11,24,0.65) 40%,
+            rgba(8,11,24,0.12) 100%
         ),
         url("https://skins.nerfplz.com/art/245019_splash.jpg");
-
     background-size: cover;
     background-position: center 18%;
     background-repeat: no-repeat;
-
     min-height: 650px;
 }
 
@@ -198,14 +205,14 @@ header {
 }
 
 .hero h1 {
-    font-size: clamp(36px, 6vw, 62px);
+    font-size: clamp(36px,6vw,62px);
     margin: 0 0 18px;
     font-weight: 900;
     letter-spacing: -2px;
 }
 
 .hero h1 span {
-    background: linear-gradient(90deg, #a78bfa, #38bdf8);
+    background: linear-gradient(90deg,#a78bfa,#38bdf8);
     -webkit-background-clip: text;
     color: transparent;
 }
@@ -244,7 +251,7 @@ header {
 }
 
 .search-box button {
-    background: linear-gradient(135deg, #7c3aed, #2563eb);
+    background: linear-gradient(135deg,#7c3aed,#2563eb);
     color: white;
     border: none;
     padding: 0 22px;
@@ -258,6 +265,120 @@ header {
     margin: 0 auto;
     padding: 20px 22px 70px;
 }
+
+/* 공통 제목 */
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.section-heading h2 {
+    font-size: 21px;
+    margin: 0;
+}
+
+.result-count {
+    color: #858da8;
+    font-size: 12px;
+}
+
+/* 인기 사이트 */
+
+.popular-section {
+    margin-top: 12px;
+    margin-bottom: 55px;
+}
+
+.popular-subtitle {
+    color: #929bb4;
+    font-size: 12px;
+    margin: 8px 0 20px;
+    line-height: 1.7;
+}
+
+.popular-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0,1fr));
+    gap: 14px;
+}
+
+.popular-card {
+    background: linear-gradient(145deg,#1b2038,#101527);
+    border: 1px solid rgba(148,163,184,0.13);
+    border-radius: 16px;
+    padding: 17px 13px;
+    min-width: 0;
+    transition: 0.25s;
+    display: flex;
+    flex-direction: column;
+}
+
+.popular-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(139,92,246,0.65);
+    box-shadow: 0 10px 30px rgba(76,29,149,0.18);
+}
+
+.rank-number {
+    font-size: 12px;
+    font-weight: 900;
+    color: #a78bfa;
+    margin-bottom: 12px;
+}
+
+.rank-number.top-three {
+    color: #fbbf24;
+}
+
+.popular-logo-area {
+    width: 54px;
+    height: 54px;
+    background: #fff;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px;
+    overflow: hidden;
+    margin-bottom: 13px;
+}
+
+.popular-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.popular-icon {
+    display: none;
+    font-size: 27px;
+}
+
+.popular-card h3 {
+    font-size: 14px;
+    margin: 0 0 7px;
+}
+
+.popular-card p {
+    color: #929bb4;
+    font-size: 11px;
+    line-height: 1.6;
+    min-height: 34px;
+    margin: 0 0 13px;
+    flex: 1;
+}
+
+.popular-link {
+    color: #a5b4fc;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* 카테고리 */
 
 .category-list {
     display: flex;
@@ -281,40 +402,24 @@ header {
 .category-btn:hover,
 .category-btn.active {
     color: white;
-    background: linear-gradient(135deg, #6d28d9, #2563eb);
+    background: linear-gradient(135deg,#6d28d9,#2563eb);
     border-color: transparent;
 }
 
-.section-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 10px;
-}
-
-.section-heading h2 {
-    font-size: 21px;
-    margin: 0;
-}
-
-.result-count {
-    color: #858da8;
-    font-size: 12px;
-}
+/* 전체 사이트 카드 */
 
 .site-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
     gap: 16px;
 }
 
 .site-card {
-    background: linear-gradient(145deg, #171d32, #101527);
+    background: linear-gradient(145deg,#171d32,#101527);
     border: 1px solid rgba(148,163,184,0.12);
     border-radius: 17px;
     padding: 21px;
-    min-height: 165px;
+    min-height: 190px;
     position: relative;
     transition: 0.25s;
     display: flex;
@@ -331,11 +436,32 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 14px;
+    min-height: 55px;
+    margin-bottom: 15px;
 }
 
-.site-icon {
-    font-size: 26px;
+.logo-area {
+    width: 54px;
+    height: 54px;
+    border-radius: 13px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 7px;
+    flex-shrink: 0;
+}
+
+.site-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.site-icon-fallback {
+    font-size: 28px;
+    display: none;
 }
 
 .favorite {
@@ -379,6 +505,8 @@ header {
     border-radius: 15px;
 }
 
+/* 소개 */
+
 .info-section {
     margin-top: 65px;
     padding: 27px;
@@ -399,6 +527,8 @@ header {
     margin-bottom: 0;
 }
 
+/* 하단 */
+
 footer {
     border-top: 1px solid rgba(255,255,255,0.08);
     text-align: center;
@@ -412,7 +542,13 @@ footer a {
     color: #a78bfa;
 }
 
-/* 모바일 화면 */
+/* 모바일 */
+
+@media (max-width: 850px) {
+    .popular-grid {
+        grid-template-columns: repeat(3,minmax(0,1fr));
+    }
+}
 
 @media (max-width: 600px) {
     header {
@@ -430,14 +566,23 @@ footer a {
         background-size: auto 100%;
     }
 
+    .popular-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 10px;
+    }
+
+    .popular-card {
+        padding: 14px 12px;
+    }
+
     .site-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2,minmax(0,1fr));
         gap: 10px;
     }
 
     .site-card {
         padding: 15px;
-        min-height: 160px;
+        min-height: 185px;
     }
 
     .site-card h3 {
@@ -451,6 +596,12 @@ footer a {
     .category-btn {
         padding: 9px 13px;
         font-size: 12px;
+    }
+
+    .logo-area,
+    .popular-logo-area {
+        width: 48px;
+        height: 48px;
     }
 }
 </style>
@@ -488,7 +639,6 @@ footer a {
                 placeholder="사이트 이름이나 키워드를 검색하세요"
                 aria-label="사이트 검색"
             >
-
             <button onclick="searchSites()">검색</button>
         </div>
 
@@ -496,6 +646,61 @@ footer a {
 </section>
 
 <main class="container">
+
+    <!-- 인기 사이트 TOP 10 -->
+
+    <section class="popular-section">
+
+        <div class="section-heading">
+            <h2>🔥 인기 사이트 TOP 10</h2>
+        </div>
+
+        <p class="popular-subtitle">
+            링크에코가 추천하는 인기 사이트를 순위별로 만나보세요.
+        </p>
+
+        <div class="popular-grid">
+
+            {% for site in popular_sites %}
+            <a
+                class="popular-card"
+                href="{{ site.url }}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+
+                <div class="rank-number {% if site.rank <= 3 %}top-three{% endif %}">
+                    TOP {{ site.rank }}
+                </div>
+
+                <div class="popular-logo-area">
+
+                    <img
+                        class="popular-logo"
+                        src="https://www.google.com/s2/favicons?domain={{ site.domain }}&sz=128"
+                        alt="{{ site.name }} 로고"
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                    >
+
+                    <span class="popular-icon">{{ site.icon }}</span>
+
+                </div>
+
+                <h3>{{ site.name }}</h3>
+
+                <p>{{ site.description }}</p>
+
+                <span class="popular-link">공식 사이트 방문 →</span>
+
+            </a>
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    <!-- 카테고리 -->
 
     <nav class="category-list" aria-label="사이트 카테고리">
 
@@ -519,6 +724,8 @@ footer a {
         <span class="result-count" id="resultCount"></span>
     </div>
 
+    <!-- 전체 사이트 목록 -->
+
     <section class="site-grid" id="siteGrid">
 
         {% for site in sites %}
@@ -530,13 +737,29 @@ footer a {
         >
 
             <div class="card-top">
-                <span class="site-icon">{{ site.icon }}</span>
+
+                <div class="logo-area">
+
+                    <img
+                        class="site-logo"
+                        src="https://www.google.com/s2/favicons?domain={{ site.domain }}&sz=128"
+                        alt="{{ site.name }} 로고"
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                    >
+
+                    <span class="site-icon-fallback">
+                        {{ site.icon }}
+                    </span>
+
+                </div>
 
                 <button
                     class="favorite"
                     aria-label="{{ site.name }} 즐겨찾기"
                     onclick="toggleFavorite('{{ site.name }}', this)"
                 >☆</button>
+
             </div>
 
             <h3>{{ site.name }}</h3>
@@ -569,8 +792,8 @@ footer a {
             편리하게 확인할 수 있도록 만든 주소모아 서비스입니다.
             OTT·동영상, 게임, 실시간 방송, 만화·웹툰 카테고리에서
             원하는 사이트를 쉽게 찾아볼 수 있습니다.
-            검색 기능과 즐겨찾기를 이용해 자주 방문하는 사이트를
-            더욱 편리하게 관리할 수 있습니다.
+            인기 사이트 추천과 검색 기능, 즐겨찾기를 이용해
+            자주 방문하는 사이트를 더욱 편리하게 관리할 수 있습니다.
             링크에코는 각 서비스의 공식 홈페이지로 연결되는 링크를 제공합니다.
         </p>
     </section>
@@ -599,7 +822,9 @@ let currentCategory = "전체";
 let favoritesOnly = false;
 
 function getCards() {
-    return Array.from(document.querySelectorAll(".site-card"));
+    return Array.from(
+        document.querySelectorAll("#siteGrid .site-card")
+    );
 }
 
 function updateCount(count) {
@@ -735,13 +960,23 @@ applyFilters();
 </html>
 """
 
+# =====================================
+# 홈페이지
+# =====================================
+
 @app.route("/")
 def home():
     return render_template_string(
         HTML,
         sites=SITES,
-        categories=CATEGORIES
+        categories=CATEGORIES,
+        popular_sites=POPULAR_SITES
     )
+
+
+# =====================================
+# 사이트맵
+# =====================================
 
 @app.route("/sitemap.xml")
 def sitemap():
@@ -759,6 +994,11 @@ def sitemap():
 
     return Response(xml, mimetype="application/xml")
 
+
+# =====================================
+# robots.txt
+# =====================================
+
 @app.route("/robots.txt")
 def robots():
     content = f"""User-agent: *
@@ -767,6 +1007,11 @@ Allow: /
 Sitemap: {BASE_URL}/sitemap.xml
 """
     return Response(content, mimetype="text/plain")
+
+
+# =====================================
+# 서버 실행
+# =====================================
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
