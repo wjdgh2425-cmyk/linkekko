@@ -1,14 +1,11 @@
 
 from flask import Flask, render_template_string, Response
 from datetime import datetime, timezone
+import os
 
 app = Flask(__name__)
 
 BASE_URL = "https://linkekko.onrender.com"
-
-# =====================================
-# 링크에코 사이트 목록
-# =====================================
 
 SITES = [
     # OTT · 동영상
@@ -54,10 +51,6 @@ CATEGORIES = [
     "실시간 방송",
     "만화·웹툰"
 ]
-
-# =====================================
-# 홈페이지
-# =====================================
 
 HTML = """
 <!DOCTYPE html>
@@ -148,25 +141,31 @@ header {
     background: rgba(139,92,246,0.2);
 }
 
-/* 에코 메인 배경 사진 */
+/* =================================
+   트루 데미지 에코 메인 배경
+   이미지가 더 크게 보이도록 높이 확대
+================================= */
 
 .hero {
     text-align: center;
-    padding: 100px 20px 55px;
+    padding: 115px 20px 70px;
     position: relative;
     overflow: hidden;
+
     background:
         linear-gradient(
             90deg,
-            rgba(8, 11, 24, 0.96) 0%,
-            rgba(8, 11, 24, 0.78) 48%,
-            rgba(8, 11, 24, 0.25) 100%
+            rgba(8, 11, 24, 0.92) 0%,
+            rgba(8, 11, 24, 0.65) 40%,
+            rgba(8, 11, 24, 0.12) 100%
         ),
         url("https://skins.nerfplz.com/art/245019_splash.jpg");
+
     background-size: cover;
-    background-position: center 25%;
+    background-position: center 18%;
     background-repeat: no-repeat;
-    min-height: 440px;
+
+    min-height: 650px;
 }
 
 .hero::before {
@@ -413,6 +412,8 @@ footer a {
     color: #a78bfa;
 }
 
+/* 모바일 화면 */
+
 @media (max-width: 600px) {
     header {
         padding: 17px 5%;
@@ -423,9 +424,10 @@ footer a {
     }
 
     .hero {
-        padding-top: 65px;
-        min-height: 400px;
-        background-position: 60% center;
+        padding: 85px 18px 55px;
+        min-height: 540px;
+        background-position: 58% top;
+        background-size: auto 100%;
     }
 
     .site-grid {
@@ -733,10 +735,6 @@ applyFilters();
 </html>
 """
 
-# =====================================
-# 홈페이지
-# =====================================
-
 @app.route("/")
 def home():
     return render_template_string(
@@ -744,11 +742,6 @@ def home():
         sites=SITES,
         categories=CATEGORIES
     )
-
-
-# =====================================
-# 사이트맵
-# =====================================
 
 @app.route("/sitemap.xml")
 def sitemap():
@@ -766,11 +759,6 @@ def sitemap():
 
     return Response(xml, mimetype="application/xml")
 
-
-# =====================================
-# robots.txt
-# =====================================
-
 @app.route("/robots.txt")
 def robots():
     content = f"""User-agent: *
@@ -780,17 +768,6 @@ Sitemap: {BASE_URL}/sitemap.xml
 """
     return Response(content, mimetype="text/plain")
 
-
-# =====================================
-# 서버 실행
-# =====================================
-
 if __name__ == "__main__":
-    import os
-
     port = int(os.environ.get("PORT", 5000))
-
-    app.run(
-        host="0.0.0.0",
-        port=port
-    )
+    app.run(host="0.0.0.0", port=port)
