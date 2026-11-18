@@ -20,6 +20,7 @@ os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 # =====================================
 
 SITES = [
+    # OTT · 동영상
     {"name": "티빙", "category": "OTT·동영상", "description": "드라마, 예능, 영화와 실시간 TV", "url": "https://www.tving.com/", "domain": "tving.com", "icon": "📺", "rank": 5},
     {"name": "넷플릭스", "category": "OTT·동영상", "description": "다양한 영화와 오리지널 시리즈", "url": "https://www.netflix.com/kr", "domain": "netflix.com", "icon": "🎬", "rank": 2},
     {"name": "왓챠", "category": "OTT·동영상", "description": "영화와 드라마 감상 서비스", "url": "https://watcha.com/", "domain": "watcha.com", "icon": "🍿"},
@@ -29,6 +30,7 @@ SITES = [
     {"name": "디즈니플러스", "category": "OTT·동영상", "description": "디즈니, 마블, 스타워즈 콘텐츠", "url": "https://www.disneyplus.com/ko-kr", "domain": "disneyplus.com", "icon": "✨", "rank": 8},
     {"name": "라프텔", "category": "OTT·동영상", "description": "애니메이션 전문 스트리밍", "url": "https://laftel.net/", "domain": "laftel.net", "icon": "🌸"},
 
+    # 게임
     {"name": "넥슨", "category": "게임", "description": "다양한 온라인 게임과 게임 소식", "url": "https://www.nexon.com/", "domain": "nexon.com", "icon": "🎮"},
     {"name": "라이엇 게임즈", "category": "게임", "description": "리그 오브 레전드와 라이엇 게임", "url": "https://www.riotgames.com/", "domain": "riotgames.com", "icon": "⚔️"},
     {"name": "스팀", "category": "게임", "description": "PC 게임 구매와 라이브러리", "url": "https://store.steampowered.com/", "domain": "steampowered.com", "icon": "🕹️", "rank": 3},
@@ -36,12 +38,14 @@ SITES = [
     {"name": "닌텐도", "category": "게임", "description": "닌텐도 게임과 콘솔 정보", "url": "https://www.nintendo.com/kr/", "domain": "nintendo.com", "icon": "🍄"},
     {"name": "배틀그라운드", "category": "게임", "description": "배틀그라운드 공식 홈페이지", "url": "https://pubg.com/ko-kr", "domain": "pubg.com", "icon": "🔫", "rank": 7},
 
+    # 실시간 방송
     {"name": "SOOP", "category": "실시간 방송", "description": "실시간 방송과 스트리머 콘텐츠", "url": "https://www.sooplive.co.kr/", "domain": "sooplive.co.kr", "icon": "📡"},
     {"name": "치지직", "category": "실시간 방송", "description": "게임과 다양한 실시간 방송", "url": "https://chzzk.naver.com/", "domain": "chzzk.naver.com", "icon": "🟢", "rank": 6},
     {"name": "유튜브 라이브", "category": "실시간 방송", "description": "유튜브 실시간 스트리밍", "url": "https://www.youtube.com/live", "domain": "youtube.com", "icon": "🔴"},
     {"name": "틱톡", "category": "실시간 방송", "description": "숏폼 영상과 라이브 방송", "url": "https://www.tiktok.com/", "domain": "tiktok.com", "icon": "🎵"},
     {"name": "킥", "category": "실시간 방송", "description": "글로벌 실시간 스트리밍 플랫폼", "url": "https://kick.com/", "domain": "kick.com", "icon": "💚"},
 
+    # 만화 · 웹툰
     {"name": "네이버웹툰", "category": "만화·웹툰", "description": "다양한 장르의 인기 웹툰", "url": "https://comic.naver.com/", "domain": "comic.naver.com", "icon": "📗", "rank": 4},
     {"name": "카카오웹툰", "category": "만화·웹툰", "description": "인기 웹툰과 독점 연재 작품", "url": "https://webtoon.kakao.com/", "domain": "webtoon.kakao.com", "icon": "📙"},
     {"name": "카카오페이지", "category": "만화·웹툰", "description": "웹툰과 웹소설 콘텐츠", "url": "https://page.kakao.com/", "domain": "page.kakao.com", "icon": "📚", "rank": 10},
@@ -52,7 +56,13 @@ SITES = [
     {"name": "미스터블루", "category": "만화·웹툰", "description": "만화와 웹툰 콘텐츠", "url": "https://www.mrblue.com/", "domain": "mrblue.com", "icon": "🖌️"},
 ]
 
-CATEGORIES = ["전체", "OTT·동영상", "게임", "실시간 방송", "만화·웹툰"]
+CATEGORIES = [
+    "전체",
+    "OTT·동영상",
+    "게임",
+    "실시간 방송",
+    "만화·웹툰"
+]
 
 for index, site in enumerate(SITES):
     site["id"] = index
@@ -88,7 +98,10 @@ def get_visit_counts():
             "SELECT site_id, visit_count FROM site_visits"
         ).fetchall()
 
-    return {row["site_id"]: row["visit_count"] for row in rows}
+    return {
+        row["site_id"]: row["visit_count"]
+        for row in rows
+    }
 
 
 def get_ranked_sites():
@@ -111,7 +124,7 @@ def get_ranked_sites():
 
 
 # =====================================
-# 홈페이지
+# 홈페이지 디자인
 # =====================================
 
 HTML = """
@@ -147,7 +160,9 @@ HTML = """
 </script>
 
 <style>
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
 body {
     margin: 0;
@@ -160,7 +175,10 @@ body {
     min-height: 100vh;
 }
 
-a { color: inherit; text-decoration: none; }
+a {
+    color: inherit;
+    text-decoration: none;
+}
 
 header {
     width: 100%;
@@ -193,7 +211,11 @@ header {
     border-radius: 20px;
 }
 
-.header-contact:hover { background: rgba(139,92,246,0.2); }
+.header-contact:hover {
+    background: rgba(139,92,246,0.2);
+}
+
+/* 에코 배경 */
 
 .hero {
     text-align: center;
@@ -214,7 +236,10 @@ header {
     min-height: 650px;
 }
 
-.hero-content { position: relative; z-index: 1; }
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
 
 .hero-label {
     display: inline-block;
@@ -269,7 +294,9 @@ header {
     font-size: 14px;
 }
 
-.search-box input::placeholder { color: #a0a8bd; }
+.search-box input::placeholder {
+    color: #a0a8bd;
+}
 
 .search-box button {
     background: linear-gradient(135deg,#7c3aed,#2563eb);
@@ -281,73 +308,48 @@ header {
     cursor: pointer;
 }
 
-/* OWN THIS TIME 음악 플레이어 */
+/* GIANTS 음악 플레이어 */
 
 .music-section {
     width: min(440px, 100%);
     margin: 28px auto 0;
-    padding: 19px;
+    padding: 17px;
     border: 1px solid rgba(167,139,250,0.38);
     border-radius: 18px;
-    background: rgba(8,11,24,0.88);
+    background: rgba(8,11,24,0.82);
     box-shadow: 0 0 30px rgba(124,58,237,0.2);
     backdrop-filter: blur(10px);
 }
 
 .music-title {
-    font-size: 16px;
-    font-weight: 900;
-    margin-bottom: 6px;
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 5px;
 }
 
 .music-artist {
     font-size: 11px;
     color: #a5b4fc;
-    margin-bottom: 15px;
+    margin-bottom: 14px;
 }
 
-.music-visual {
-    min-height: 95px;
-    border-radius: 12px;
-    background:
-        radial-gradient(circle at 50% 50%, rgba(124,58,237,0.35), transparent 60%),
-        linear-gradient(135deg,#17152d,#0c1930);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
+.music-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
+    border-radius: 12px;
+    background: #080b18;
 }
 
-.music-visual span {
-    width: 6px;
-    height: 24px;
-    border-radius: 8px;
-    background: linear-gradient(#a78bfa,#38bdf8);
-    animation: musicBars 0.8s ease-in-out infinite alternate;
-    animation-play-state: paused;
-}
-
-.music-visual span:nth-child(2n) { animation-delay: .2s; height: 38px; }
-.music-visual span:nth-child(3n) { animation-delay: .4s; height: 52px; }
-.music-visual span:nth-child(4n) { animation-delay: .1s; height: 30px; }
-
-.music-visual.playing span { animation-play-state: running; }
-
-@keyframes musicBars {
-    from { transform: scaleY(.35); }
-    to { transform: scaleY(1); }
-}
-
-.music-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 14px;
+.music-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
 }
 
 .music-button {
-    flex: 1;
+    width: 100%;
+    margin-top: 12px;
     padding: 12px 15px;
     border: 0;
     border-radius: 10px;
@@ -356,11 +358,6 @@ header {
     font-weight: bold;
     cursor: pointer;
     font-size: 13px;
-}
-
-.volume-control {
-    width: 95px;
-    accent-color: #a78bfa;
 }
 
 .music-status {
@@ -386,10 +383,22 @@ header {
     gap: 10px;
 }
 
-.section-heading h2 { font-size: 21px; margin: 0; }
-.result-count { color: #858da8; font-size: 12px; }
+.section-heading h2 {
+    font-size: 21px;
+    margin: 0;
+}
 
-.popular-section { margin-top: 12px; margin-bottom: 55px; }
+.result-count {
+    color: #858da8;
+    font-size: 12px;
+}
+
+/* 인기 순위 */
+
+.popular-section {
+    margin-top: 12px;
+    margin-bottom: 55px;
+}
 
 .popular-subtitle {
     color: #929bb4;
@@ -428,7 +437,9 @@ header {
     margin-bottom: 12px;
 }
 
-.rank-number.top-three { color: #fbbf24; }
+.rank-number.top-three {
+    color: #fbbf24;
+}
 
 .popular-logo-area {
     width: 54px;
@@ -443,9 +454,21 @@ header {
     margin-bottom: 13px;
 }
 
-.popular-logo { width: 100%; height: 100%; object-fit: contain; }
-.popular-icon { display: none; font-size: 27px; }
-.popular-card h3 { font-size: 14px; margin: 0 0 7px; }
+.popular-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.popular-icon {
+    display: none;
+    font-size: 27px;
+}
+
+.popular-card h3 {
+    font-size: 14px;
+    margin: 0 0 7px;
+}
 
 .popular-card p {
     color: #929bb4;
@@ -456,8 +479,19 @@ header {
     flex: 1;
 }
 
-.popular-count { color: #c4b5fd; font-size: 11px; margin-bottom: 12px; }
-.popular-link { color: #a5b4fc; font-size: 11px; font-weight: bold; }
+.popular-count {
+    color: #c4b5fd;
+    font-size: 11px;
+    margin-bottom: 12px;
+}
+
+.popular-link {
+    color: #a5b4fc;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* 카테고리 */
 
 .category-list {
     display: flex;
@@ -484,6 +518,8 @@ header {
     background: linear-gradient(135deg,#6d28d9,#2563eb);
     border-color: transparent;
 }
+
+/* 사이트 카드 */
 
 .site-grid {
     display: grid;
@@ -530,8 +566,16 @@ header {
     flex-shrink: 0;
 }
 
-.site-logo { width: 100%; height: 100%; object-fit: contain; }
-.site-icon-fallback { font-size: 28px; display: none; }
+.site-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.site-icon-fallback {
+    font-size: 28px;
+    display: none;
+}
 
 .favorite {
     border: none;
@@ -542,8 +586,14 @@ header {
     padding: 0;
 }
 
-.favorite.active { color: #fbbf24; }
-.site-card h3 { margin: 0 0 8px; font-size: 17px; }
+.favorite.active {
+    color: #fbbf24;
+}
+
+.site-card h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
+}
 
 .site-card p {
     color: #929bb4;
@@ -553,8 +603,17 @@ header {
     flex: 1;
 }
 
-.site-visit-count { font-size: 11px; color: #a5acc2; margin-bottom: 12px; }
-.visit-link { color: #a5b4fc; font-size: 12px; font-weight: bold; }
+.site-visit-count {
+    font-size: 11px;
+    color: #a5acc2;
+    margin-bottom: 12px;
+}
+
+.visit-link {
+    color: #a5b4fc;
+    font-size: 12px;
+    font-weight: bold;
+}
 
 .empty {
     display: none;
@@ -565,6 +624,8 @@ header {
     border-radius: 15px;
 }
 
+/* 소개 */
+
 .info-section {
     margin-top: 65px;
     padding: 27px;
@@ -573,7 +634,10 @@ header {
     border: 1px solid rgba(148,163,184,0.12);
 }
 
-.info-section h2 { font-size: 19px; margin-top: 0; }
+.info-section h2 {
+    font-size: 19px;
+    margin-top: 0;
+}
 
 .info-section p {
     color: #a5acc2;
@@ -581,6 +645,8 @@ header {
     line-height: 1.9;
     margin-bottom: 0;
 }
+
+/* 하단 */
 
 footer {
     border-top: 1px solid rgba(255,255,255,0.08);
@@ -591,15 +657,26 @@ footer {
     line-height: 2;
 }
 
-footer a { color: #a78bfa; }
+footer a {
+    color: #a78bfa;
+}
+
+/* 모바일 */
 
 @media (max-width: 850px) {
-    .popular-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .popular-grid {
+        grid-template-columns: repeat(3,minmax(0,1fr));
+    }
 }
 
 @media (max-width: 600px) {
-    header { padding: 17px 5%; }
-    .logo { font-size: 21px; }
+    header {
+        padding: 17px 5%;
+    }
+
+    .logo {
+        font-size: 21px;
+    }
 
     .hero {
         padding: 75px 18px 45px;
@@ -613,18 +690,32 @@ footer a { color: #a78bfa; }
         gap: 10px;
     }
 
-    .popular-card { padding: 14px 12px; }
+    .popular-card {
+        padding: 14px 12px;
+    }
 
     .site-grid {
         grid-template-columns: repeat(2,minmax(0,1fr));
         gap: 10px;
     }
 
-    .site-card { padding: 15px; min-height: 185px; }
-    .site-card h3 { font-size: 15px; }
-    .site-card p { font-size: 11px; }
+    .site-card {
+        padding: 15px;
+        min-height: 185px;
+    }
 
-    .category-btn { padding: 9px 13px; font-size: 12px; }
+    .site-card h3 {
+        font-size: 15px;
+    }
+
+    .site-card p {
+        font-size: 11px;
+    }
+
+    .category-btn {
+        padding: 9px 13px;
+        font-size: 12px;
+    }
 
     .logo-area,
     .popular-logo-area {
@@ -670,49 +761,28 @@ footer a { color: #a78bfa; }
             <button onclick="searchSites()">검색</button>
         </div>
 
-        <!-- 링크에코 오리지널 음악 -->
+        <!-- 트루 데미지 GIANTS 음악 -->
 
-        <section class="music-section" aria-label="링크에코 대표 음악">
+        <section class="music-section" aria-label="링크에코 배경 음악">
 
-            <div class="music-title">🎵 OWN THIS TIME</div>
-            <div class="music-artist">LINK EKKO · ORIGINAL HIP-HOP THEME</div>
+            <div class="music-title">🎵 링크에코 대표 음악</div>
+            <div class="music-artist">TRUE DAMAGE - GIANTS</div>
 
-            <div class="music-visual" id="musicVisual" aria-hidden="true">
-                <span></span><span></span><span></span><span></span>
-                <span></span><span></span><span></span><span></span>
-                <span></span><span></span><span></span><span></span>
-                <span></span><span></span><span></span>
+            <div class="music-frame">
+                <div id="giants-player"></div>
             </div>
 
-            <audio id="themeAudio" preload="metadata">
-                <source src="/static/music/own_this_time.wav" type="audio/wav">
-            </audio>
-
-            <div class="music-controls">
-                <button
-                    type="button"
-                    class="music-button"
-                    id="musicButton"
-                    onclick="toggleMusic()"
-                >
-                    ▶ 음악 재생하기
-                </button>
-
-                <input
-                    class="volume-control"
-                    type="range"
-                    id="musicVolume"
-                    min="0"
-                    max="1"
-                    step="0.05"
-                    value="0.7"
-                    aria-label="음악 음량"
-                    title="음량 조절"
-                >
-            </div>
+            <button
+                type="button"
+                class="music-button"
+                id="musicButton"
+                onclick="startMusic()"
+            >
+                ▶ 음악 재생하기
+            </button>
 
             <div class="music-status" id="musicStatus">
-                OWN THIS TIME을 준비하고 있습니다.
+                페이지 접속 시 자동 재생을 시도합니다.
                 자동 재생이 차단되면 재생 버튼을 눌러주세요.
             </div>
 
@@ -743,6 +813,7 @@ footer a { color: #a78bfa; }
                 </div>
 
                 <div class="popular-logo-area">
+
                     <img
                         class="popular-logo"
                         src="https://www.google.com/s2/favicons?domain={{ site.domain }}&sz=128"
@@ -750,7 +821,9 @@ footer a { color: #a78bfa; }
                         loading="lazy"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
                     >
+
                     <span class="popular-icon">{{ site.icon }}</span>
+
                 </div>
 
                 <h3>{{ site.name }}</h3>
@@ -804,6 +877,7 @@ footer a { color: #a78bfa; }
             <div class="card-top">
 
                 <div class="logo-area">
+
                     <img
                         class="site-logo"
                         src="https://www.google.com/s2/favicons?domain={{ site.domain }}&sz=128"
@@ -812,7 +886,10 @@ footer a { color: #a78bfa; }
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
                     >
 
-                    <span class="site-icon-fallback">{{ site.icon }}</span>
+                    <span class="site-icon-fallback">
+                        {{ site.icon }}
+                    </span>
+
                 </div>
 
                 <button
@@ -865,9 +942,11 @@ footer a { color: #a78bfa; }
 
     <div>
         사이트 관련 문의 및 광고 문의:
-        <a href="https://t.me/linkekko369"
-           target="_blank"
-           rel="noopener noreferrer">
+        <a
+            href="https://t.me/linkekko369"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
             텔레그램 @linkekko369
         </a>
     </div>
@@ -877,78 +956,93 @@ footer a { color: #a78bfa; }
 
 <script>
 /* =====================================
-   OWN THIS TIME 음악 플레이어
+   GIANTS 유튜브 자동 재생
 ===================================== */
 
-const themeAudio = document.getElementById("themeAudio");
-const musicButton = document.getElementById("musicButton");
-const musicStatus = document.getElementById("musicStatus");
-const musicVisual = document.getElementById("musicVisual");
-const musicVolume = document.getElementById("musicVolume");
+let giantsPlayer;
+let musicReady = false;
 
-themeAudio.volume = Number(musicVolume.value);
+function onYouTubeIframeAPIReady() {
+    giantsPlayer = new YT.Player("giants-player", {
+        videoId: "sVZpHFXcFJw",
 
-function updateMusicPlaying(isPlaying) {
-    musicVisual.classList.toggle("playing", isPlaying);
+        playerVars: {
+            autoplay: 1,
+            controls: 1,
+            playsinline: 1,
+            rel: 0
+        },
 
-    if (isPlaying) {
-        musicButton.textContent = "Ⅱ 음악 일시정지";
-        musicStatus.textContent = "♪ LINK EKKO - OWN THIS TIME 재생 중";
-    } else {
-        musicButton.textContent = "▶ 음악 재생하기";
-    }
+        events: {
+            onReady: function(event) {
+                musicReady = true;
+
+                // 페이지 접속 시 소리와 함께 자동 재생 시도
+                event.target.unMute();
+                event.target.setVolume(70);
+                event.target.playVideo();
+
+                document.getElementById("musicStatus").textContent =
+                    "GIANTS 자동 재생을 시도하고 있습니다.";
+            },
+
+            onStateChange: function(event) {
+                const button = document.getElementById("musicButton");
+                const status = document.getElementById("musicStatus");
+
+                if (event.data === YT.PlayerState.PLAYING) {
+                    button.style.display = "none";
+                    status.textContent = "♪ TRUE DAMAGE - GIANTS 재생 중";
+                }
+
+                if (
+                    event.data === YT.PlayerState.PAUSED ||
+                    event.data === YT.PlayerState.ENDED
+                ) {
+                    button.style.display = "block";
+                    button.textContent = "▶ 음악 재생하기";
+                    status.textContent = "음악이 일시정지되었습니다.";
+                }
+            },
+
+            onAutoplayBlocked: function() {
+                showMusicButton();
+            },
+
+            onError: function() {
+                showMusicButton();
+                document.getElementById("musicStatus").textContent =
+                    "음악을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.";
+            }
+        }
+    });
 }
 
-function toggleMusic() {
-    if (themeAudio.paused) {
-        themeAudio.play()
-            .then(() => {
-                updateMusicPlaying(true);
-            })
-            .catch(() => {
-                musicStatus.textContent =
-                    "음악 파일을 찾을 수 없습니다. 음악 파일을 GitHub에 업로드했는지 확인해주세요.";
-            });
-    } else {
-        themeAudio.pause();
-        updateMusicPlaying(false);
-        musicStatus.textContent = "음악이 일시정지되었습니다.";
-    }
+function showMusicButton() {
+    document.getElementById("musicButton").style.display = "block";
+    document.getElementById("musicStatus").textContent =
+        "브라우저가 자동 재생을 차단했습니다. 아래 버튼을 눌러 음악을 재생해주세요.";
 }
 
-musicVolume.addEventListener("input", function() {
-    themeAudio.volume = Number(this.value);
-});
+function startMusic() {
+    if (!musicReady || !giantsPlayer) {
+        document.getElementById("musicStatus").textContent =
+            "음악 플레이어를 준비하고 있습니다. 잠시 후 다시 눌러주세요.";
+        return;
+    }
 
-themeAudio.addEventListener("play", function() {
-    updateMusicPlaying(true);
-});
+    giantsPlayer.unMute();
+    giantsPlayer.setVolume(70);
+    giantsPlayer.playVideo();
 
-themeAudio.addEventListener("pause", function() {
-    updateMusicPlaying(false);
-});
+    document.getElementById("musicStatus").textContent =
+        "GIANTS 재생을 요청했습니다.";
+}
 
-themeAudio.addEventListener("ended", function() {
-    updateMusicPlaying(false);
-    musicStatus.textContent = "음악이 끝났습니다.";
-});
-
-themeAudio.addEventListener("error", function() {
-    musicStatus.textContent =
-        "음악 파일을 불러오지 못했습니다. static/music/own_this_time.wav 경로를 확인해주세요.";
-});
-
-// 사이트 접속 시 자동 재생 시도
-window.addEventListener("load", function() {
-    themeAudio.play()
-        .then(() => {
-            updateMusicPlaying(true);
-        })
-        .catch(() => {
-            musicStatus.textContent =
-                "자동 재생이 브라우저에서 차단되었습니다. 재생 버튼을 눌러주세요.";
-        });
-});
+// 유튜브 공식 플레이어 API 불러오기
+const youtubeScript = document.createElement("script");
+youtubeScript.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(youtubeScript);
 
 
 /* =====================================
@@ -1125,6 +1219,7 @@ def home():
 
 @app.route("/go/<int:site_id>")
 def visit_site(site_id):
+
     if site_id < 0 or site_id >= len(SITES):
         abort(404)
 
