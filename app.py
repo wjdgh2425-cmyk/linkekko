@@ -1,51 +1,60 @@
 
-from flask import Flask, render_template_string, Response
+from flask import Flask, render_template_string, Response, redirect, abort
 from datetime import datetime, timezone
+import sqlite3
 import os
 
 app = Flask(__name__)
 
 BASE_URL = "https://linkekko.onrender.com"
 
+# Render 영구 디스크를 연결하면 DATABASE_PATH를 /var/data/linkekko.db로 설정
+DB_PATH = os.environ.get(
+    "DATABASE_PATH",
+    os.path.join(app.instance_path, "linkekko.db")
+)
+
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+
 # =====================================
-# 사이트 목록 및 인기 순위
+# 사이트 목록
 # =====================================
 
 SITES = [
     # OTT · 동영상
-    {"category": "OTT·동영상", "name": "티빙", "description": "드라마, 예능, 영화와 실시간 TV", "url": "https://www.tving.com/", "domain": "tving.com", "icon": "📺", "rank": 5},
-    {"category": "OTT·동영상", "name": "넷플릭스", "description": "다양한 영화와 오리지널 시리즈", "url": "https://www.netflix.com/kr", "domain": "netflix.com", "icon": "🎬", "rank": 2},
-    {"category": "OTT·동영상", "name": "왓챠", "description": "영화와 드라마 감상 서비스", "url": "https://watcha.com/", "domain": "watcha.com", "icon": "🍿"},
-    {"category": "OTT·동영상", "name": "쿠팡플레이", "description": "영화, 드라마, 스포츠 콘텐츠", "url": "https://www.coupangplay.com/", "domain": "coupangplay.com", "icon": "🎥", "rank": 9},
-    {"category": "OTT·동영상", "name": "유튜브", "description": "다양한 영상과 크리에이터 콘텐츠", "url": "https://www.youtube.com/", "domain": "youtube.com", "icon": "▶️", "rank": 1},
-    {"category": "OTT·동영상", "name": "웨이브", "description": "방송 프로그램과 영화 감상", "url": "https://www.wavve.com/", "domain": "wavve.com", "icon": "🌊"},
-    {"category": "OTT·동영상", "name": "디즈니플러스", "description": "디즈니, 마블, 스타워즈 콘텐츠", "url": "https://www.disneyplus.com/ko-kr", "domain": "disneyplus.com", "icon": "✨", "rank": 8},
-    {"category": "OTT·동영상", "name": "라프텔", "description": "애니메이션 전문 스트리밍", "url": "https://laftel.net/", "domain": "laftel.net", "icon": "🌸"},
+    {"name": "티빙", "category": "OTT·동영상", "description": "드라마, 예능, 영화와 실시간 TV", "url": "https://www.tving.com/", "domain": "tving.com", "icon": "📺", "rank": 5},
+    {"name": "넷플릭스", "category": "OTT·동영상", "description": "다양한 영화와 오리지널 시리즈", "url": "https://www.netflix.com/kr", "domain": "netflix.com", "icon": "🎬", "rank": 2},
+    {"name": "왓챠", "category": "OTT·동영상", "description": "영화와 드라마 감상 서비스", "url": "https://watcha.com/", "domain": "watcha.com", "icon": "🍿"},
+    {"name": "쿠팡플레이", "category": "OTT·동영상", "description": "영화, 드라마, 스포츠 콘텐츠", "url": "https://www.coupangplay.com/", "domain": "coupangplay.com", "icon": "🎥", "rank": 9},
+    {"name": "유튜브", "category": "OTT·동영상", "description": "다양한 영상과 크리에이터 콘텐츠", "url": "https://www.youtube.com/", "domain": "youtube.com", "icon": "▶️", "rank": 1},
+    {"name": "웨이브", "category": "OTT·동영상", "description": "방송 프로그램과 영화 감상", "url": "https://www.wavve.com/", "domain": "wavve.com", "icon": "🌊"},
+    {"name": "디즈니플러스", "category": "OTT·동영상", "description": "디즈니, 마블, 스타워즈 콘텐츠", "url": "https://www.disneyplus.com/ko-kr", "domain": "disneyplus.com", "icon": "✨", "rank": 8},
+    {"name": "라프텔", "category": "OTT·동영상", "description": "애니메이션 전문 스트리밍", "url": "https://laftel.net/", "domain": "laftel.net", "icon": "🌸"},
 
     # 게임
-    {"category": "게임", "name": "넥슨", "description": "다양한 온라인 게임과 게임 소식", "url": "https://www.nexon.com/", "domain": "nexon.com", "icon": "🎮"},
-    {"category": "게임", "name": "라이엇 게임즈", "description": "리그 오브 레전드와 라이엇 게임", "url": "https://www.riotgames.com/", "domain": "riotgames.com", "icon": "⚔️"},
-    {"category": "게임", "name": "스팀", "description": "PC 게임 구매와 라이브러리", "url": "https://store.steampowered.com/", "domain": "steampowered.com", "icon": "🕹️", "rank": 3},
-    {"category": "게임", "name": "플레이스테이션", "description": "플레이스테이션 게임과 콘솔 정보", "url": "https://www.playstation.com/ko-kr/", "domain": "playstation.com", "icon": "🎯"},
-    {"category": "게임", "name": "닌텐도", "description": "닌텐도 게임과 콘솔 정보", "url": "https://www.nintendo.com/kr/", "domain": "nintendo.com", "icon": "🍄"},
-    {"category": "게임", "name": "배틀그라운드", "description": "배틀그라운드 공식 홈페이지", "url": "https://pubg.com/ko-kr", "domain": "pubg.com", "icon": "🔫", "rank": 7},
+    {"name": "넥슨", "category": "게임", "description": "다양한 온라인 게임과 게임 소식", "url": "https://www.nexon.com/", "domain": "nexon.com", "icon": "🎮"},
+    {"name": "라이엇 게임즈", "category": "게임", "description": "리그 오브 레전드와 라이엇 게임", "url": "https://www.riotgames.com/", "domain": "riotgames.com", "icon": "⚔️"},
+    {"name": "스팀", "category": "게임", "description": "PC 게임 구매와 라이브러리", "url": "https://store.steampowered.com/", "domain": "steampowered.com", "icon": "🕹️", "rank": 3},
+    {"name": "플레이스테이션", "category": "게임", "description": "플레이스테이션 게임과 콘솔 정보", "url": "https://www.playstation.com/ko-kr/", "domain": "playstation.com", "icon": "🎯"},
+    {"name": "닌텐도", "category": "게임", "description": "닌텐도 게임과 콘솔 정보", "url": "https://www.nintendo.com/kr/", "domain": "nintendo.com", "icon": "🍄"},
+    {"name": "배틀그라운드", "category": "게임", "description": "배틀그라운드 공식 홈페이지", "url": "https://pubg.com/ko-kr", "domain": "pubg.com", "icon": "🔫", "rank": 7},
 
     # 실시간 방송
-    {"category": "실시간 방송", "name": "SOOP", "description": "실시간 방송과 스트리머 콘텐츠", "url": "https://www.sooplive.co.kr/", "domain": "sooplive.co.kr", "icon": "📡"},
-    {"category": "실시간 방송", "name": "치지직", "description": "게임과 다양한 실시간 방송", "url": "https://chzzk.naver.com/", "domain": "chzzk.naver.com", "icon": "🟢", "rank": 6},
-    {"category": "실시간 방송", "name": "유튜브 라이브", "description": "유튜브 실시간 스트리밍", "url": "https://www.youtube.com/live", "domain": "youtube.com", "icon": "🔴"},
-    {"category": "실시간 방송", "name": "틱톡", "description": "숏폼 영상과 라이브 방송", "url": "https://www.tiktok.com/", "domain": "tiktok.com", "icon": "🎵"},
-    {"category": "실시간 방송", "name": "킥", "description": "글로벌 실시간 스트리밍 플랫폼", "url": "https://kick.com/", "domain": "kick.com", "icon": "💚"},
+    {"name": "SOOP", "category": "실시간 방송", "description": "실시간 방송과 스트리머 콘텐츠", "url": "https://www.sooplive.co.kr/", "domain": "sooplive.co.kr", "icon": "📡"},
+    {"name": "치지직", "category": "실시간 방송", "description": "게임과 다양한 실시간 방송", "url": "https://chzzk.naver.com/", "domain": "chzzk.naver.com", "icon": "🟢", "rank": 6},
+    {"name": "유튜브 라이브", "category": "실시간 방송", "description": "유튜브 실시간 스트리밍", "url": "https://www.youtube.com/live", "domain": "youtube.com", "icon": "🔴"},
+    {"name": "틱톡", "category": "실시간 방송", "description": "숏폼 영상과 라이브 방송", "url": "https://www.tiktok.com/", "domain": "tiktok.com", "icon": "🎵"},
+    {"name": "킥", "category": "실시간 방송", "description": "글로벌 실시간 스트리밍 플랫폼", "url": "https://kick.com/", "domain": "kick.com", "icon": "💚"},
 
     # 만화 · 웹툰
-    {"category": "만화·웹툰", "name": "네이버웹툰", "description": "다양한 장르의 인기 웹툰", "url": "https://comic.naver.com/", "domain": "comic.naver.com", "icon": "📗", "rank": 4},
-    {"category": "만화·웹툰", "name": "카카오웹툰", "description": "인기 웹툰과 독점 연재 작품", "url": "https://webtoon.kakao.com/", "domain": "webtoon.kakao.com", "icon": "📙"},
-    {"category": "만화·웹툰", "name": "카카오페이지", "description": "웹툰과 웹소설 콘텐츠", "url": "https://page.kakao.com/", "domain": "page.kakao.com", "icon": "📚", "rank": 10},
-    {"category": "만화·웹툰", "name": "네이버 시리즈", "description": "웹툰과 웹소설 감상", "url": "https://series.naver.com/", "domain": "series.naver.com", "icon": "📖"},
-    {"category": "만화·웹툰", "name": "레진코믹스", "description": "다양한 장르의 웹툰 플랫폼", "url": "https://www.lezhin.com/", "domain": "lezhin.com", "icon": "🎨"},
-    {"category": "만화·웹툰", "name": "봄툰", "description": "다양한 장르의 웹툰 플랫폼", "url": "https://www.bomtoon.com/", "domain": "bomtoon.com", "icon": "🌷"},
-    {"category": "만화·웹툰", "name": "리디", "description": "웹툰, 웹소설과 전자책", "url": "https://ridibooks.com/", "domain": "ridibooks.com", "icon": "📕"},
-    {"category": "만화·웹툰", "name": "미스터블루", "description": "만화와 웹툰 콘텐츠", "url": "https://www.mrblue.com/", "domain": "mrblue.com", "icon": "🖌️"},
+    {"name": "네이버웹툰", "category": "만화·웹툰", "description": "다양한 장르의 인기 웹툰", "url": "https://comic.naver.com/", "domain": "comic.naver.com", "icon": "📗", "rank": 4},
+    {"name": "카카오웹툰", "category": "만화·웹툰", "description": "인기 웹툰과 독점 연재 작품", "url": "https://webtoon.kakao.com/", "domain": "webtoon.kakao.com", "icon": "📙"},
+    {"name": "카카오페이지", "category": "만화·웹툰", "description": "웹툰과 웹소설 콘텐츠", "url": "https://page.kakao.com/", "domain": "page.kakao.com", "icon": "📚", "rank": 10},
+    {"name": "네이버 시리즈", "category": "만화·웹툰", "description": "웹툰과 웹소설 감상", "url": "https://series.naver.com/", "domain": "series.naver.com", "icon": "📖"},
+    {"name": "레진코믹스", "category": "만화·웹툰", "description": "다양한 장르의 웹툰 플랫폼", "url": "https://www.lezhin.com/", "domain": "lezhin.com", "icon": "🎨"},
+    {"name": "봄툰", "category": "만화·웹툰", "description": "다양한 장르의 웹툰 플랫폼", "url": "https://www.bomtoon.com/", "domain": "bomtoon.com", "icon": "🌷"},
+    {"name": "리디", "category": "만화·웹툰", "description": "웹툰, 웹소설과 전자책", "url": "https://ridibooks.com/", "domain": "ridibooks.com", "icon": "📕"},
+    {"name": "미스터블루", "category": "만화·웹툰", "description": "만화와 웹툰 콘텐츠", "url": "https://www.mrblue.com/", "domain": "mrblue.com", "icon": "🖌️"},
 ]
 
 CATEGORIES = [
@@ -56,14 +65,75 @@ CATEGORIES = [
     "만화·웹툰"
 ]
 
-# 인기 순위가 지정된 사이트 10개
-POPULAR_SITES = sorted(
-    [site for site in SITES if "rank" in site],
-    key=lambda site: site["rank"]
-)
+# 각 사이트에 고유 번호 부여
+for index, site in enumerate(SITES):
+    site["id"] = index
+
 
 # =====================================
-# 홈페이지
+# 데이터베이스 생성
+# =====================================
+
+def get_db():
+    conn = sqlite3.connect(DB_PATH, timeout=20)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def init_db():
+    with get_db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS site_visits (
+                site_id INTEGER PRIMARY KEY,
+                site_name TEXT NOT NULL,
+                visit_count INTEGER NOT NULL DEFAULT 0
+            )
+        """)
+
+
+init_db()
+
+
+# =====================================
+# 방문 기록 가져오기
+# =====================================
+
+def get_visit_counts():
+    with get_db() as conn:
+        rows = conn.execute(
+            "SELECT site_id, visit_count FROM site_visits"
+        ).fetchall()
+
+    return {
+        row["site_id"]: row["visit_count"]
+        for row in rows
+    }
+
+
+def get_ranked_sites():
+    counts = get_visit_counts()
+
+    ranked = []
+
+    for site in SITES:
+        item = site.copy()
+        item["visit_count"] = counts.get(site["id"], 0)
+        ranked.append(item)
+
+    # 실제 방문 횟수가 높은 사이트가 먼저 표시됨
+    # 방문 횟수가 같으면 기존 추천 순위로 정렬
+    ranked.sort(
+        key=lambda site: (
+            -site["visit_count"],
+            site.get("rank", 999)
+        )
+    )
+
+    return ranked
+
+
+# =====================================
+# 홈페이지 디자인
 # =====================================
 
 HTML = """
@@ -75,7 +145,7 @@ HTML = """
 
 <title>링크에코 | 분야별 공식 사이트 주소모아</title>
 
-<meta name="description" content="링크에코는 OTT·동영상, 게임, 실시간 방송, 만화·웹툰 분야의 공식 사이트 주소와 인기 사이트를 한곳에 모아 제공하는 주소모아 서비스입니다.">
+<meta name="description" content="링크에코는 OTT·동영상, 게임, 실시간 방송, 만화·웹툰 분야의 공식 사이트 주소와 실제 방문 기록 기반 인기 순위를 제공하는 주소모아 서비스입니다.">
 <meta name="keywords" content="링크에코, 주소모아, 인기사이트, 공식사이트, OTT, 게임, 실시간방송, 만화, 웹툰">
 <meta name="robots" content="index, follow">
 <meta name="google-site-verification" content="pPTsfFdNbqdZlwp9cF4Bp_mVbMWP-YJ_HMiEBsNr7B4">
@@ -175,19 +245,6 @@ header {
     min-height: 650px;
 }
 
-.hero::before {
-    content: "";
-    position: absolute;
-    width: 340px;
-    height: 340px;
-    background: rgba(124,58,237,0.15);
-    filter: blur(100px);
-    border-radius: 50%;
-    top: 0;
-    left: calc(50% - 170px);
-    pointer-events: none;
-}
-
 .hero-content {
     position: relative;
     z-index: 1;
@@ -266,8 +323,6 @@ header {
     padding: 20px 22px 70px;
 }
 
-/* 공통 제목 */
-
 .section-heading {
     display: flex;
     justify-content: space-between;
@@ -286,7 +341,7 @@ header {
     font-size: 12px;
 }
 
-/* 인기 사이트 */
+/* 인기 순위 */
 
 .popular-section {
     margin-top: 12px;
@@ -368,8 +423,14 @@ header {
     font-size: 11px;
     line-height: 1.6;
     min-height: 34px;
-    margin: 0 0 13px;
+    margin: 0 0 10px;
     flex: 1;
+}
+
+.popular-count {
+    color: #c4b5fd;
+    font-size: 11px;
+    margin-bottom: 12px;
 }
 
 .popular-link {
@@ -406,7 +467,7 @@ header {
     border-color: transparent;
 }
 
-/* 전체 사이트 카드 */
+/* 사이트 카드 */
 
 .site-grid {
     display: grid;
@@ -486,8 +547,14 @@ header {
     color: #929bb4;
     font-size: 12px;
     line-height: 1.6;
-    margin: 0 0 17px;
+    margin: 0 0 10px;
     flex: 1;
+}
+
+.site-visit-count {
+    font-size: 11px;
+    color: #a5acc2;
+    margin-bottom: 12px;
 }
 
 .visit-link {
@@ -647,7 +714,7 @@ footer a {
 
 <main class="container">
 
-    <!-- 인기 사이트 TOP 10 -->
+    <!-- 실제 방문 기록 기반 인기 순위 -->
 
     <section class="popular-section">
 
@@ -656,7 +723,7 @@ footer a {
         </div>
 
         <p class="popular-subtitle">
-            링크에코가 추천하는 인기 사이트를 순위별로 만나보세요.
+            링크에코에서 발생한 사이트 방문 횟수를 기준으로 자동 정렬됩니다.
         </p>
 
         <div class="popular-grid">
@@ -664,13 +731,11 @@ footer a {
             {% for site in popular_sites %}
             <a
                 class="popular-card"
-                href="{{ site.url }}"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/go/{{ site.id }}"
             >
 
-                <div class="rank-number {% if site.rank <= 3 %}top-three{% endif %}">
-                    TOP {{ site.rank }}
+                <div class="rank-number {% if loop.index <= 3 %}top-three{% endif %}">
+                    TOP {{ loop.index }}
                 </div>
 
                 <div class="popular-logo-area">
@@ -690,6 +755,10 @@ footer a {
                 <h3>{{ site.name }}</h3>
 
                 <p>{{ site.description }}</p>
+
+                <div class="popular-count">
+                    누적 방문 {{ "{:,}".format(site.visit_count) }}회
+                </div>
 
                 <span class="popular-link">공식 사이트 방문 →</span>
 
@@ -766,11 +835,13 @@ footer a {
 
             <p>{{ site.description }}</p>
 
+            <div class="site-visit-count">
+                누적 방문 {{ "{:,}".format(site.visit_count) }}회
+            </div>
+
             <a
                 class="visit-link"
-                href="{{ site.url }}"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/go/{{ site.id }}"
             >
                 공식 사이트 방문 →
             </a>
@@ -792,8 +863,9 @@ footer a {
             편리하게 확인할 수 있도록 만든 주소모아 서비스입니다.
             OTT·동영상, 게임, 실시간 방송, 만화·웹툰 카테고리에서
             원하는 사이트를 쉽게 찾아볼 수 있습니다.
-            인기 사이트 추천과 검색 기능, 즐겨찾기를 이용해
-            자주 방문하는 사이트를 더욱 편리하게 관리할 수 있습니다.
+            검색 기능과 즐겨찾기를 이용해 자주 방문하는 사이트를
+            편리하게 관리할 수 있으며, 실제 방문 기록을 바탕으로
+            인기 사이트 순위를 제공합니다.
             링크에코는 각 서비스의 공식 홈페이지로 연결되는 링크를 제공합니다.
         </p>
     </section>
@@ -960,18 +1032,52 @@ applyFilters();
 </html>
 """
 
+
 # =====================================
 # 홈페이지
 # =====================================
 
 @app.route("/")
 def home():
+    ranked_sites = get_ranked_sites()
+
+    # 전체 사이트 카드에도 방문 횟수 표시
+    sites_with_counts = ranked_sites
+
+    # 인기 사이트 TOP 10
+    popular_sites = ranked_sites[:10]
+
     return render_template_string(
         HTML,
-        sites=SITES,
+        sites=sites_with_counts,
         categories=CATEGORIES,
-        popular_sites=POPULAR_SITES
+        popular_sites=popular_sites
     )
+
+
+# =====================================
+# 사이트 클릭 기록 후 이동
+# =====================================
+
+@app.route("/go/<int:site_id>")
+def visit_site(site_id):
+
+    if site_id < 0 or site_id >= len(SITES):
+        abort(404)
+
+    site = SITES[site_id]
+
+    with get_db() as conn:
+        conn.execute("""
+            INSERT INTO site_visits (site_id, site_name, visit_count)
+            VALUES (?, ?, 1)
+            ON CONFLICT(site_id)
+            DO UPDATE SET
+                site_name = excluded.site_name,
+                visit_count = visit_count + 1
+        """, (site_id, site["name"]))
+
+    return redirect(site["url"])
 
 
 # =====================================
