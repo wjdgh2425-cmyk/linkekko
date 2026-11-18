@@ -1,44 +1,55 @@
 
 from flask import Flask, render_template_string, Response
+from datetime import datetime, timezone
 
 app = Flask(__name__)
 
-# =====================================
-# LINK EKKO 사이트 데이터
-# =====================================
-
 BASE_URL = "https://linkekko.onrender.com"
+
+# =====================================
+# LINK EKKO 사이트 목록
+# =====================================
 
 SITES = [
     {
-        "category": "만화",
-        "name": "마루마루",
-        "description": "만화 관련 외부 사이트",
-        "url": "https://marumaru111.com/"
+        "category": "OTT·동영상",
+        "name": "티빙",
+        "description": "드라마, 예능, 영화 등 다양한 콘텐츠를 감상하는 OTT 서비스",
+        "url": "https://www.tving.com/",
+        "icon": "📺",
+        "tag": "K-콘텐츠"
     },
     {
-        "category": "애니메이션",
-        "name": "애니울프",
-        "description": "애니메이션 관련 외부 사이트",
-        "url": "https://aniwolf.com/"
+        "category": "OTT·동영상",
+        "name": "넷플릭스",
+        "description": "영화, 드라마, 다큐멘터리 등 다양한 콘텐츠를 제공하는 글로벌 OTT 서비스",
+        "url": "https://www.netflix.com/kr",
+        "icon": "🎬",
+        "tag": "글로벌 OTT"
     },
     {
-        "category": "웹툰·만화",
-        "name": "뚜툰",
-        "description": "웹툰 및 만화 관련 외부 사이트",
-        "url": "https://ufo1004.com/"
+        "category": "OTT·동영상",
+        "name": "왓챠",
+        "description": "영화와 드라마를 감상하고 취향에 맞는 작품을 발견하는 OTT 서비스",
+        "url": "https://watcha.com/ko/browse/all",
+        "icon": "🍿",
+        "tag": "영화·드라마"
     },
     {
-        "category": "성인·유흥정보",
-        "name": "오피뷰",
-        "description": "성인 대상 유흥업소 정보 사이트 · 만 19세 이상",
-        "url": "https://opview88.com/"
+        "category": "OTT·동영상",
+        "name": "쿠팡플레이",
+        "description": "영화, 드라마, 예능 및 스포츠 콘텐츠를 감상하는 스트리밍 서비스",
+        "url": "https://www.coupangplay.com/",
+        "icon": "▶️",
+        "tag": "스포츠·엔터"
     },
     {
-        "category": "영화·드라마",
-        "name": "티비혼",
-        "description": "영화 및 드라마 관련 외부 사이트",
-        "url": "https://tvhon11.com/"
+        "category": "OTT·동영상",
+        "name": "유튜브",
+        "description": "영상, 음악, 라이브 방송 및 크리에이터 콘텐츠를 감상하는 동영상 플랫폼",
+        "url": "https://www.youtube.com/",
+        "icon": "▶",
+        "tag": "동영상"
     }
 ]
 
@@ -46,37 +57,15 @@ CATEGORIES = list(dict.fromkeys(
     site["category"] for site in SITES
 ))
 
-
-# =====================================
-# 구조화된 데이터 (Google SEO)
-# =====================================
-
-STRUCTURED_DATA = """
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://linkekko.onrender.com/#organization",
-      "name": "LINK EKKO",
-      "alternateName": "링크 에코 주소모아",
-      "url": "https://linkekko.onrender.com/"
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://linkekko.onrender.com/#website",
-      "name": "LINK EKKO | 링크 에코 주소모아",
-      "alternateName": "링크 에코",
-      "url": "https://linkekko.onrender.com/",
-      "inLanguage": "ko-KR",
-      "publisher": {
-        "@id": "https://linkekko.onrender.com/#organization"
-      }
-    }
-  ]
+STRUCTURED_DATA = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "LINK EKKO",
+    "alternateName": "링크 에코 주소모아",
+    "url": BASE_URL,
+    "description": "분야별 사이트 주소를 모아 편리하게 찾아볼 수 있는 주소모아 서비스입니다.",
+    "inLanguage": "ko-KR"
 }
-"""
-
 
 # =====================================
 # 홈페이지 HTML
@@ -85,872 +74,719 @@ STRUCTURED_DATA = """
 HTML = """
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>LINK EKKO | 링크 에코 주소모아 - 분야별 사이트 모음</title>
-
-<meta name="description"
-content="LINK EKKO(링크 에코 주소모아)에서 만화, 애니메이션, 웹툰, 영화·드라마 등 다양한 분야의 외부 사이트 주소를 편리하게 찾아보세요. 분야별 카테고리와 검색 기능을 제공하는 사이트 모음 서비스입니다.">
-
-<meta name="keywords"
-content="LINK EKKO, 링크 에코, 링크에코, 주소모아, 사이트모음, 사이트 주소, 만화 사이트, 애니메이션 사이트, 웹툰 사이트, 영화 사이트">
-
-<meta name="author" content="LINK EKKO">
-
-<meta name="robots" content="index, follow">
-<meta name="googlebot" content="index, follow">
-
-<meta name="theme-color" content="#070b1c">
-
-<link rel="canonical" href="https://linkekko.onrender.com/">
-
-<!-- Google 소유권 확인 -->
-<meta name="google-site-verification"
-content="pPTsfFdNbqdZlwp9cF4Bp_mVbMWP-YJ_HMiEBsNr7B4">
-
-<!-- Open Graph -->
-<meta property="og:type" content="website">
-<meta property="og:locale" content="ko_KR">
-<meta property="og:site_name" content="LINK EKKO">
-<meta property="og:title"
-content="LINK EKKO | 링크 에코 주소모아">
-<meta property="og:description"
-content="원하는 사이트를 한곳에, 주소모아! LINK EKKO에서 분야별 사이트 주소를 편리하게 찾아보세요.">
-<meta property="og:url"
-content="https://linkekko.onrender.com/">
-
-<!-- Twitter -->
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title"
-content="LINK EKKO | 링크 에코 주소모아">
-<meta name="twitter:description"
-content="다양한 분야의 사이트 주소를 한곳에서 찾아보세요.">
-
-<!-- Google 구조화 데이터 -->
-<script type="application/ld+json">
-{{ structured_data | safe }}
-</script>
-
-<style>
-
-* {
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    margin: 0;
-    background: #070b1c;
-    color: #f5f8ff;
-    font-family: Arial, sans-serif;
-}
-
-header {
-    min-height: 70px;
-    padding: 12px 5%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #090e20;
-    border-bottom: 1px solid #174d70;
-}
-
-.logo {
-    font-size: 25px;
-    font-weight: 900;
-    letter-spacing: 1px;
-}
-
-.logo span {
-    color: #00e5ff;
-}
-
-nav a {
-    color: #dce8ff;
-    text-decoration: none;
-    margin-left: 22px;
-    font-size: 14px;
-}
-
-nav a:hover {
-    color: #00e5ff;
-}
-
-.hero {
-    min-height: 570px;
-    padding: 75px 7%;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-
-    background:
-        radial-gradient(
-            circle at 80% 50%,
-            #123b5c 0%,
-            #10132c 35%,
-            #070b1c 75%
-        );
-}
-
-.ekko-art {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 65%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center 25%;
-    z-index: 0;
-    opacity: 0.95;
-
-    -webkit-mask-image:
-        linear-gradient(to right, transparent 0%, black 38%);
-    mask-image:
-        linear-gradient(to right, transparent 0%, black 38%);
-}
-
-.image-error {
-    display: none;
-    position: absolute;
-    right: 8%;
-    bottom: 25px;
-    z-index: 2;
-    color: #9fb8d9;
-    font-size: 12px;
-}
-
-.hero::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-
-    background: linear-gradient(
-        90deg,
-        #070b1c 0%,
-        rgba(7, 11, 28, 0.95) 34%,
-        rgba(7, 11, 28, 0.15) 100%
-    );
-
-    z-index: 1;
-    pointer-events: none;
-}
-
-.hero-content {
-    max-width: 650px;
-    position: relative;
-    z-index: 2;
-}
-
-.tag {
-    color: #00e5ff;
-    letter-spacing: 4px;
-    font-weight: bold;
-    font-size: 15px;
-}
-
-.hero h1 {
-    font-size: clamp(48px, 8vw, 88px);
-    line-height: 1;
-    margin: 22px 0;
-    font-style: italic;
-    font-weight: 900;
-}
-
-.hero h1 span {
-    color: #00d9ff;
-}
-
-.hero h2 {
-    font-size: 25px;
-}
-
-.hero p {
-    color: #d0d9f5;
-    font-size: 18px;
-    line-height: 1.6;
-}
-
-.search-box {
-    display: flex;
-    margin-top: 35px;
-    max-width: 650px;
-    border: 2px solid #00dfff;
-    border-radius: 15px;
-    overflow: hidden;
-    background: #111a35;
-    box-shadow: 0 0 22px #00cfff44;
-}
-
-.search-box input {
-    flex: 1;
-    min-width: 0;
-    padding: 18px;
-    border: none;
-    outline: none;
-    background: transparent;
-    color: white;
-    font-size: 16px;
-}
-
-.search-box button {
-    border: none;
-    padding: 0 27px;
-    color: #001321;
-    background: #00dfff;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.search-box button:hover {
-    background: #69f0ff;
-}
-
-main {
-    max-width: 1400px;
-    margin: auto;
-    padding: 35px 30px 70px;
-}
-
-.section-title {
-    text-align: center;
-    margin-bottom: 28px;
-}
-
-.section-title h2 {
-    font-size: 28px;
-}
-
-.section-title p {
-    color: #aebfdf;
-}
-
-/* SEO 소개 콘텐츠 */
-
-.seo-intro {
-    max-width: 1000px;
-    margin: 0 auto 30px;
-    padding: 22px;
-    border: 1px solid #24466c;
-    border-radius: 15px;
-    background: #101831;
-    line-height: 1.8;
-}
-
-.seo-intro h2 {
-    color: #00e5ff;
-    font-size: 21px;
-    margin-top: 0;
-}
-
-.seo-intro p {
-    color: #c2d0e9;
-    font-size: 14px;
-    margin-bottom: 0;
-}
-
-.notice {
-    max-width: 900px;
-    margin: 0 auto 25px;
-    padding: 15px 18px;
-    border: 1px solid #6b5930;
-    border-radius: 12px;
-    background: #211d16;
-    color: #f1d69b;
-    font-size: 13px;
-    line-height: 1.7;
-}
-
-.categories {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 10px 0 30px;
-}
-
-.categories button {
-    padding: 12px 22px;
-    border: 1px solid #29476b;
-    border-radius: 30px;
-    color: #dbeaff;
-    background: #101831;
-    cursor: pointer;
-    font-size: 15px;
-}
-
-.categories button:hover,
-.categories button.active {
-    color: #001321;
-    background: #00dfff;
-    border-color: #00dfff;
-    box-shadow: 0 0 18px #00dfff66;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns:
-        repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-}
-
-.site {
-    padding: 23px;
-    border: 1px solid #27618b;
-    border-radius: 18px;
-
-    background: linear-gradient(
-        145deg,
-        #17284b,
-        #101329
-    );
-
-    box-shadow: 0 8px 25px #0008;
-    transition: 0.2s;
-}
-
-.site:hover {
-    transform: translateY(-5px);
-    border-color: #00e5ff;
-    box-shadow: 0 0 22px #00dfff33;
-}
-
-.site small {
-    color: #00e5ff;
-    font-weight: bold;
-}
-
-.site h2 {
-    font-size: 23px;
-    margin: 18px 0 8px;
-}
-
-.site p {
-    color: #b9c8e8;
-    min-height: 42px;
-    line-height: 1.5;
-}
-
-.site-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    margin-top: 20px;
-}
-
-.site a {
-    display: inline-block;
-    padding: 11px 14px;
-    border-radius: 9px;
-    background: #124bd8;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 13px;
-}
-
-.site a:hover {
-    background: #00bde9;
-    color: #001321;
-}
-
-.favorite {
-    border: 1px solid #47658c;
-    border-radius: 9px;
-    padding: 9px 12px;
-    background: #172442;
-    color: white;
-    cursor: pointer;
-    font-size: 17px;
-}
-
-.favorite.saved {
-    color: #ffdc55;
-}
-
-#empty {
-    display: none;
-    text-align: center;
-    padding: 40px;
-    color: #b9c8e8;
-}
-
-footer {
-    padding: 35px 20px;
-    text-align: center;
-    color: #a9badc;
-    border-top: 1px solid #174d70;
-    background: #090e20;
-}
-
-footer span {
-    color: #00dfff;
-}
-
-@media (max-width: 700px) {
-
-    header {
-        padding: 15px 18px;
-    }
-
-    .logo {
-        font-size: 19px;
-    }
-
-    nav a {
-        margin-left: 8px;
-        font-size: 12px;
-    }
-
-    .hero {
-        min-height: 650px;
-        padding: 55px 22px;
-        align-items: flex-start;
-    }
-
-    .ekko-art {
-        width: 100%;
-        height: 65%;
-        top: auto;
-        bottom: 0;
-        opacity: 0.7;
-
-        -webkit-mask-image:
-            linear-gradient(to bottom, transparent 0%, black 35%);
-        mask-image:
-            linear-gradient(to bottom, transparent 0%, black 35%);
-    }
-
-    .hero::after {
-        background: linear-gradient(
-            180deg,
-            #070b1c 0%,
-            rgba(7, 11, 28, 0.75) 48%,
-            rgba(7, 11, 28, 0.1) 100%
-        );
-    }
-
-    .hero h2 {
-        font-size: 20px;
-    }
-
-    .hero p {
-        font-size: 15px;
-    }
-
-    main {
-        padding: 25px 16px 45px;
-    }
-
-    .seo-intro {
-        padding: 17px;
-    }
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LINK EKKO | 링크 에코 주소모아</title>
+
+    <meta name="description"
+          content="LINK EKKO 주소모아에서 티빙, 넷플릭스, 왓챠, 쿠팡플레이, 유튜브 등 다양한 OTT·동영상 사이트를 확인하세요.">
+
+    <meta name="keywords"
+          content="LINK EKKO, 링크 에코, 주소모아, 티빙, 넷플릭스, 왓챠, 쿠팡플레이, 유튜브">
+
+    <meta name="robots" content="index, follow">
+
+    <meta name="google-site-verification"
+          content="pPTsfFdNbqdZlwp9cF4Bp_mVbMWP-YJ_HMiEBsNr7B4">
+
+    <link rel="canonical" href="https://linkekko.onrender.com/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="LINK EKKO | 링크 에코 주소모아">
+    <meta property="og:description"
+          content="자주 찾는 사이트를 LINK EKKO에서 편리하게 확인하세요.">
+    <meta property="og:url" content="https://linkekko.onrender.com/">
+
+    <script type="application/ld+json">
+        {{ structured_data | tojson }}
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, "Malgun Gothic", sans-serif;
+            background: #080b18;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .background-glow {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background:
+                radial-gradient(circle at 15% 15%,
+                    rgba(0,225,255,.14), transparent 32%),
+                radial-gradient(circle at 85% 25%,
+                    rgba(139,70,255,.17), transparent 35%),
+                #080b18;
+        }
+
+        .background-grid {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: .12;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(0,220,255,.12) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,220,255,.12) 1px, transparent 1px);
+            background-size: 45px 45px;
+        }
+
+        header {
+            padding: 23px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            background: rgba(8,11,24,.8);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(0,220,255,.65);
+        }
+
+        .logo span {
+            color: #00e5ff;
+        }
+
+        .header-label {
+            color: #9ba9c8;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .hero {
+            max-width: 1250px;
+            min-height: 340px;
+            margin: 38px auto 25px;
+            padding: 65px 55px;
+            border: 1px solid rgba(0,220,255,.23);
+            border-radius: 24px;
+            background:
+                linear-gradient(90deg,
+                    rgba(7,10,25,.97),
+                    rgba(7,10,25,.78),
+                    rgba(7,10,25,.35)),
+                url("https://skins.nerfplz.com/art/245019_splash.jpg")
+                center 25% / cover no-repeat,
+                #111a35;
+            box-shadow: 0 15px 55px rgba(0,0,0,.35);
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 8px 13px;
+            border: 1px solid rgba(0,225,255,.5);
+            border-radius: 30px;
+            color: #00e5ff;
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(34px,5vw,58px);
+            line-height: 1.15;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 span {
+            color: #00e5ff;
+            text-shadow: 0 0 22px rgba(0,225,255,.45);
+        }
+
+        .hero p {
+            color: #c0cbe0;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 20px 20px 70px;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 35px 0 20px;
+            gap: 15px;
+        }
+
+        .section-heading h2 {
+            font-size: 24px;
+        }
+
+        .section-heading h2 span {
+            color: #00e5ff;
+        }
+
+        .site-count {
+            color: #8e9bb8;
+            font-size: 13px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 19px 22px;
+            margin: 20px 0;
+            border-radius: 14px;
+            border: 1px solid rgba(0,225,255,.25);
+            outline: none;
+            color: white;
+            background: rgba(17,25,48,.9);
+            font-size: 15px;
+        }
+
+        .search-box:focus {
+            border-color: #00e5ff;
+            box-shadow: 0 0 18px rgba(0,225,255,.15);
+        }
+
+        .search-box::placeholder {
+            color: #7e8ba8;
+        }
+
+        .filter-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0 28px;
+        }
+
+        .filter-btn {
+            border: 1px solid rgba(255,255,255,.12);
+            background: #161e36;
+            color: #b8c4dc;
+            border-radius: 30px;
+            padding: 10px 17px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            color: #07101e;
+            background: #00e5ff;
+            border-color: #00e5ff;
+        }
+
+        .site-grid {
+            display: grid;
+            grid-template-columns: repeat(3,minmax(0,1fr));
+            gap: 18px;
+        }
+
+        .site-card {
+            position: relative;
+            min-height: 190px;
+            padding: 24px;
+            border-radius: 17px;
+            border: 1px solid rgba(255,255,255,.09);
+            background: linear-gradient(145deg,#17223e,#0c1224);
+            transition: .25s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .site-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0,225,255,.55);
+            box-shadow: 0 12px 30px rgba(0,180,255,.10);
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 17px;
+        }
+
+        .site-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 13px;
+            background: rgba(0,225,255,.10);
+            font-size: 23px;
+        }
+
+        .site-name {
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .site-category {
+            color: #00dff5;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .site-description {
+            color: #9eacc8;
+            font-size: 13px;
+            line-height: 1.7;
+            flex: 1;
+            margin-bottom: 17px;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .site-tag {
+            color: #aab8d2;
+            font-size: 11px;
+            padding: 6px 9px;
+            border-radius: 20px;
+            background: rgba(255,255,255,.06);
+        }
+
+        .visit-btn {
+            color: #06101d;
+            background: #00e5ff;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .visit-btn:hover {
+            background: white;
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            border: 0;
+            background: transparent;
+            color: #7e8ba8;
+            font-size: 21px;
+            cursor: pointer;
+        }
+
+        .favorite-btn.active {
+            color: #ff4f91;
+        }
+
+        .empty-message {
+            display: none;
+            padding: 45px 15px;
+            color: #9eacc8;
+            text-align: center;
+            border: 1px dashed rgba(255,255,255,.15);
+            border-radius: 15px;
+        }
+
+        .intro {
+            margin-top: 55px;
+            padding: 25px;
+            border-left: 3px solid #00e5ff;
+            background: rgba(14,24,46,.65);
+            border-radius: 0 12px 12px 0;
+        }
+
+        .intro h2 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .intro p {
+            color: #9eacc8;
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+        /* 광고문의 영역 */
+
+        .contact-section {
+            max-width: 650px;
+            margin: 45px auto 0;
+            padding: 30px 25px;
+            text-align: center;
+            border: 1px solid rgba(0,225,255,.28);
+            border-radius: 18px;
+            background: linear-gradient(
+                145deg,
+                rgba(20,35,65,.95),
+                rgba(10,17,35,.95)
+            );
+            box-shadow: 0 10px 35px rgba(0,0,0,.2);
+        }
+
+        .contact-section h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .contact-section h2 span {
+            color: #00e5ff;
+        }
+
+        .contact-section p {
+            color: #9eacc8;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .telegram-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 13px 23px;
+            border-radius: 30px;
+            background: #229ED9;
+            color: white;
+            font-size: 14px;
+            font-weight: 800;
+            transition: .2s;
+        }
+
+        .telegram-btn:hover {
+            background: #168ac2;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(34,158,217,.25);
+        }
+
+        .telegram-icon {
+            font-size: 19px;
+        }
+
+        .telegram-id {
+            display: block;
+            margin-top: 13px;
+            color: #00e5ff;
+            font-size: 13px;
+        }
+
+        footer {
+            border-top: 1px solid rgba(255,255,255,.08);
+            padding: 28px 20px;
+            text-align: center;
+            color: #71809e;
+            font-size: 12px;
+            line-height: 1.9;
+        }
+
+        footer strong {
+            color: #00dff5;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 900px) {
+            .site-grid {
+                grid-template-columns: repeat(2,minmax(0,1fr));
+            }
+
+            .hero {
+                margin: 25px 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px 5%;
+            }
+
+            .logo {
+                font-size: 21px;
+            }
+
+            .header-label {
+                font-size: 10px;
+            }
+
+            .hero {
+                min-height: 300px;
+                padding: 48px 25px;
+                background-position: 58% center;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 10px 15px 50px;
+            }
+
+            .site-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-heading h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    <div class="background-glow"></div>
+    <div class="background-grid"></div>
 
-<header>
+    <header>
+        <a class="logo" href="/">LINK <span>EKKO</span></a>
+        <div class="header-label">LINK COLLECTION SERVICE</div>
+    </header>
 
-    <div class="logo">
-        ⌛ LINK <span>EKKO</span> | 주소모아
-    </div>
-
-    <nav>
-        <a href="/">홈</a>
-        <a href="#categories">카테고리</a>
-        <a href="#sites">사이트</a>
-    </nav>
-
-</header>
-
-<section class="hero">
-
-    <img
-        class="ekko-art"
-        id="ekkoImage"
-        src="https://skins.nerfplz.com/art/245019_splash.jpg"
-        alt="리그 오브 레전드 트루 데미지 에코"
-
-        onerror="
-            if (!this.dataset.fallback) {
-                this.dataset.fallback = '1';
-                this.src =
-                'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ekko_5.jpg';
-            } else {
-                this.style.display = 'none';
-                document.getElementById('imageError').style.display = 'block';
-            }
-        "
-    >
-
-    <div class="image-error" id="imageError">
-        에코 이미지를 불러오지 못했습니다.
-    </div>
-
-    <div class="hero-content">
-
-        <div class="tag">
-            TRUE DAMAGE · LINK EKKO
-        </div>
-
-        <h1>
-            LINK <span>EKKO</span>
-        </h1>
-
-        <h2>
-            원하는 사이트를 한곳에, 주소모아!
-        </h2>
-
+    <section class="hero">
+        <div class="hero-tag">WELCOME TO LINK EKKO</div>
+        <h1>YOUR LINK<br><span>YOUR WORLD.</span></h1>
         <p>
-            다양한 분야의 사이트 주소를
-            쉽고 빠르게 찾아보세요.
+            자주 찾는 사이트를 한곳에서.<br>
+            LINK EKKO에서 원하는 사이트를 쉽고 빠르게 찾아보세요.
         </p>
-
-        <div class="search-box">
-
-            <input
-                id="search"
-                type="text"
-                aria-label="사이트 이름이나 분야 검색"
-                placeholder="사이트 이름이나 분야를 검색하세요..."
-                oninput="filterSites()"
-            >
-
-            <button onclick="filterSites()">
-                검색
-            </button>
-
-        </div>
-
-    </div>
-
-</section>
-
-<main>
-
-    <div class="section-title">
-
-        <h2>LINK EKKO 사이트 모아보기</h2>
-
-        <p>
-            분야별 카테고리에서 원하는 사이트 주소를 찾아보세요.
-        </p>
-
-    </div>
-
-    <!-- 검색엔진이 이해할 수 있는 소개 콘텐츠 -->
-
-    <section class="seo-intro">
-
-        <h2>링크 에코 주소모아란?</h2>
-
-        <p>
-            LINK EKKO(링크 에코)는 다양한 분야의 외부 사이트 주소를
-            카테고리별로 모아 제공하는 사이트 모음 서비스입니다.
-            만화, 애니메이션, 웹툰·만화, 영화·드라마 등
-            여러 분야의 사이트를 한곳에서 확인할 수 있습니다.
-            검색 기능과 카테고리 분류를 활용해 원하는 사이트를
-            편리하게 찾아보세요.
-        </p>
-
     </section>
 
-    <div class="notice">
-        안내: 아래 사이트는 외부 사이트 링크 모음입니다.
-        LINK EKKO가 해당 사이트의 운영 주체이거나 공식 제휴 관계임을 의미하지 않습니다.
-        콘텐츠의 저작권 및 이용 권한은 별도로 확인해 주세요.
-        성인 대상 사이트는 만 19세 이상만 이용할 수 있습니다.
-    </div>
+    <main class="container">
+        <div class="section-heading">
+            <h2>EXPLORE <span>LINKS</span></h2>
+            <div class="site-count">등록된 사이트 {{ sites|length }}개</div>
+        </div>
 
-    <div class="categories" id="categories">
-
-        <button
-            class="active"
-            onclick="chooseCategory('전체', this)"
-        >
-            전체
-        </button>
-
-        {% for category in categories %}
-
-        <button
-            onclick="chooseCategory('{{ category }}', this)"
-        >
-            {{ category }}
-        </button>
-
-        {% endfor %}
-
-        <button
-            onclick="chooseCategory('즐겨찾기', this)"
-        >
-            ★ 즐겨찾기
-        </button>
-
-    </div>
-
-    <section class="grid" id="sites">
-
-        {% for site in sites %}
-
-        <article
-            class="site"
-            data-category="{{ site.category }}"
-            data-search="{{ site.name }} {{ site.category }} {{ site.description }}"
-            data-url="{{ site.url }}"
+        <input
+            id="searchInput"
+            class="search-box"
+            type="search"
+            placeholder="사이트 이름이나 설명을 검색하세요..."
+            aria-label="사이트 검색"
         >
 
-            <small>
-                {{ site.category }}
-            </small>
+        <div class="filter-area">
+            <button class="filter-btn active" data-category="all">전체</button>
 
-            <h2>
-                {{ site.name }}
-            </h2>
+            {% for category in categories %}
+                <button class="filter-btn" data-category="{{ category }}">
+                    {{ category }}
+                </button>
+            {% endfor %}
 
+            <button class="filter-btn" data-category="favorites">
+                즐겨찾기 ★
+            </button>
+        </div>
+
+        <div class="site-grid" id="siteGrid">
+            {% for site in sites %}
+            <article
+                class="site-card"
+                data-name="{{ site.name }}"
+                data-category="{{ site.category }}"
+                data-description="{{ site.description }}"
+            >
+                <button
+                    class="favorite-btn"
+                    type="button"
+                    aria-label="{{ site.name }} 즐겨찾기"
+                    data-favorite="{{ site.name }}"
+                >♡</button>
+
+                <div class="card-top">
+                    <div class="site-icon">{{ site.icon }}</div>
+                    <div>
+                        <div class="site-name">{{ site.name }}</div>
+                        <div class="site-category">{{ site.category }}</div>
+                    </div>
+                </div>
+
+                <p class="site-description">{{ site.description }}</p>
+
+                <div class="card-bottom">
+                    <span class="site-tag">{{ site.tag }}</span>
+                    <a
+                        class="visit-btn"
+                        href="{{ site.url }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >사이트 방문 ↗</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <div class="empty-message" id="emptyMessage">
+            검색 결과가 없습니다.
+        </div>
+
+        <section class="intro">
+            <h2>LINK EKKO 주소모아</h2>
             <p>
-                {{ site.description }}
+                LINK EKKO는 OTT·동영상 분야의 사이트 주소를 한곳에 모아
+                편리하게 확인할 수 있도록 돕는 링크 모음 서비스입니다.
+                검색 기능을 이용해 원하는 사이트를 빠르게 찾아보세요.
+                외부 사이트의 서비스 내용과 이용 조건은 각 사이트에서 확인해 주세요.
+                LINK EKKO는 외부 사이트의 운영 주체나 공식 제휴사가 아닙니다.
+            </p>
+        </section>
+
+        <!-- 광고문의 텔레그램 -->
+
+        <section class="contact-section">
+            <h2>광고 <span>문의</span></h2>
+            <p>
+                LINK EKKO 광고 및 제휴 관련 문의는<br>
+                아래 텔레그램으로 연락해 주세요.
             </p>
 
-            <div class="site-actions">
+            <a
+                class="telegram-btn"
+                href="https://t.me/linkekko369"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                <span class="telegram-icon">✈</span>
+                텔레그램으로 문의하기
+            </a>
 
-                <a
-                    href="{{ site.url }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    사이트 방문하기 ↗
-                </a>
+            <span class="telegram-id">@linkekko369</span>
+        </section>
+    </main>
 
-                <button
-                    class="favorite"
-                    onclick="toggleFavorite(this)"
-                    aria-label="즐겨찾기"
-                >
-                    ☆
-                </button>
+    <footer>
+        <strong>LINK EKKO</strong><br>
+        링크 에코 주소모아<br>
+        본 사이트는 외부 사이트의 링크를 제공하며,
+        각 외부 사이트의 운영 및 콘텐츠에 대한 책임은 해당 사이트에 있습니다.
+        <br>
+        광고문의: @linkekko369
+        <br>
+        © 2026 LINK EKKO. All rights reserved.
+    </footer>
 
-            </div>
+    <script>
+        const searchInput = document.getElementById("searchInput");
+        const cards = Array.from(document.querySelectorAll(".site-card"));
+        const filterButtons = document.querySelectorAll(".filter-btn");
+        const emptyMessage = document.getElementById("emptyMessage");
 
-        </article>
+        let activeCategory = "all";
+        let favorites = [];
 
-        {% endfor %}
-
-    </section>
-
-    <div id="empty">
-        검색 결과가 없습니다.
-    </div>
-
-</main>
-
-<footer>
-
-    <h2>
-        ⌛ LINK <span>EKKO</span> · 주소모아
-    </h2>
-
-    다양한 사이트 주소를 한곳에서 편리하게!
-
-    <p>
-        Find it. Link it. LINK EKKO!
-    </p>
-
-</footer>
-
-<script>
-
-let selectedCategory = "전체";
-
-function getFavorites() {
-
-    try {
-
-        return JSON.parse(
-            localStorage.getItem("linkekko_favorites") || "[]"
-        );
-
-    } catch (error) {
-
-        return [];
-
-    }
-
-}
-
-function toggleFavorite(button) {
-
-    const card = button.closest(".site");
-    const url = card.dataset.url;
-
-    let favorites = getFavorites();
-
-    if (favorites.includes(url)) {
-
-        favorites = favorites.filter(
-            item => item !== url
-        );
-
-    } else {
-
-        favorites.push(url);
-
-    }
-
-    localStorage.setItem(
-        "linkekko_favorites",
-        JSON.stringify(favorites)
-    );
-
-    updateFavorites();
-    filterSites();
-
-}
-
-function updateFavorites() {
-
-    const favorites = getFavorites();
-
-    document.querySelectorAll(".site").forEach(card => {
-
-        const button = card.querySelector(".favorite");
-
-        const saved = favorites.includes(
-            card.dataset.url
-        );
-
-        button.classList.toggle("saved", saved);
-        button.textContent = saved ? "★" : "☆";
-
-    });
-
-}
-
-function chooseCategory(category, button) {
-
-    selectedCategory = category;
-
-    document.querySelectorAll(
-        ".categories button"
-    ).forEach(item => {
-
-        item.classList.remove("active");
-
-    });
-
-    button.classList.add("active");
-
-    filterSites();
-
-}
-
-function filterSites() {
-
-    const keyword = document
-        .getElementById("search")
-        .value.toLowerCase();
-
-    const favorites = getFavorites();
-
-    let count = 0;
-
-    document.querySelectorAll(".site").forEach(card => {
-
-        const category = card.dataset.category;
-        const content = card.dataset.search.toLowerCase();
-
-        const isFavorite = favorites.includes(
-            card.dataset.url
-        );
-
-        const categoryMatch =
-            selectedCategory === "전체" ||
-            category === selectedCategory ||
-            (
-                selectedCategory === "즐겨찾기"
-                && isFavorite
+        try {
+            favorites = JSON.parse(
+                localStorage.getItem("linkekko_favorites") || "[]"
             );
 
-        const keywordMatch = content.includes(keyword);
-
-        const visible = categoryMatch && keywordMatch;
-
-        card.style.display = visible ? "block" : "none";
-
-        if (visible) {
-            count++;
+            if (!Array.isArray(favorites)) {
+                favorites = [];
+            }
+        } catch (error) {
+            favorites = [];
         }
 
-    });
+        function updateFavoriteButtons() {
+            document.querySelectorAll(".favorite-btn").forEach(button => {
+                const name = button.dataset.favorite;
+                const isFavorite = favorites.includes(name);
 
-    document.getElementById("empty").style.display =
-        count === 0 ? "block" : "none";
+                button.classList.toggle("active", isFavorite);
+                button.textContent = isFavorite ? "♥" : "♡";
+            });
+        }
 
-}
+        function filterCards() {
+            const keyword = searchInput.value.trim().toLowerCase();
+            let visibleCount = 0;
 
-updateFavorites();
+            cards.forEach(card => {
+                const name = card.dataset.name.toLowerCase();
+                const category = card.dataset.category.toLowerCase();
+                const description = card.dataset.description.toLowerCase();
 
-</script>
+                const matchesSearch =
+                    name.includes(keyword) ||
+                    category.includes(keyword) ||
+                    description.includes(keyword);
 
+                const matchesCategory =
+                    activeCategory === "all" ||
+                    (
+                        activeCategory === "favorites"
+                        ? favorites.includes(card.dataset.name)
+                        : card.dataset.category === activeCategory
+                    );
+
+                const visible = matchesSearch && matchesCategory;
+
+                card.style.display = visible ? "flex" : "none";
+
+                if (visible) {
+                    visibleCount++;
+                }
+            });
+
+            emptyMessage.style.display =
+                visibleCount === 0 ? "block" : "none";
+        }
+
+        searchInput.addEventListener("input", filterCards);
+
+        filterButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                filterButtons.forEach(item =>
+                    item.classList.remove("active")
+                );
+
+                button.classList.add("active");
+                activeCategory = button.dataset.category;
+                filterCards();
+            });
+        });
+
+        document.querySelectorAll(".favorite-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                const name = button.dataset.favorite;
+
+                if (favorites.includes(name)) {
+                    favorites = favorites.filter(item => item !== name);
+                } else {
+                    favorites.push(name);
+                }
+
+                localStorage.setItem(
+                    "linkekko_favorites",
+                    JSON.stringify(favorites)
+                );
+
+                updateFavoriteButtons();
+                filterCards();
+            });
+        });
+
+        updateFavoriteButtons();
+        filterCards();
+    </script>
 </body>
 </html>
 """
-
-
-# =====================================
-# 구글 사이트맵
-# =====================================
-
-@app.route("/sitemap.xml")
-def sitemap():
-
-    xml = """<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>https://linkekko.onrender.com/</loc>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
-</urlset>
-"""
-
-    return Response(
-        xml,
-        mimetype="application/xml"
-    )
-
-
-# =====================================
-# robots.txt
-# =====================================
-
-@app.route("/robots.txt")
-def robots():
-
-    content = """User-agent: *
-Allow: /
-
-Sitemap: https://linkekko.onrender.com/sitemap.xml
-"""
-
-    return Response(
-        content,
-        mimetype="text/plain"
-    )
-
 
 # =====================================
 # 홈페이지
@@ -958,7 +794,6 @@ Sitemap: https://linkekko.onrender.com/sitemap.xml
 
 @app.route("/")
 def home():
-
     return render_template_string(
         HTML,
         sites=SITES,
@@ -968,8 +803,43 @@ def home():
 
 
 # =====================================
-# 실행
+# 사이트맵
+# =====================================
+
+@app.route("/sitemap.xml")
+def sitemap():
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>{BASE_URL}/</loc>
+        <lastmod>{today}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+</urlset>
+"""
+    return Response(xml, mimetype="application/xml")
+
+
+# =====================================
+# robots.txt
+# =====================================
+
+@app.route("/robots.txt")
+def robots():
+    content = f"""User-agent: *
+Allow: /
+
+Sitemap: {BASE_URL}/sitemap.xml
+"""
+    return Response(content, mimetype="text/plain")
+
+
+# =====================================
+# 서버 실행
 # =====================================
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
